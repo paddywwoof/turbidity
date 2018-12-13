@@ -27,7 +27,7 @@ THRESH_R = 25; # top of tc. works out the first row that has 25 pixels of the 'r
 THRESH_C = 7;  # front of tc. works out the first column that has 7 pixels of the 'right' colour (proxy for conc.)  also adjust crop ranges to get rid of bits at edges
 
 START_TM = 41; # beginning of interest in s
-STOP_TM = 45;  # end of interst 
+STOP_TM = 51;  # end of interst 
 
 video_grab; # load functions in script file_in_loadpath
 start_conversion(VIDEO, START_TM, STOP_TM, FPS); # this runs asynchronously so should keep in front of these calcs
@@ -88,7 +88,7 @@ for data_rec = data
 endfor
 
 # produce plot of changes in top, front, area
-plot(tm, top);
+plot(tm, top); #TODO is there any way to put distance on the top x axis? I think we could average at what times the current is at what distance.
 hold on;
 plot(tm, front);
 plot(tm, area / 100);
