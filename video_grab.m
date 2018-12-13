@@ -39,6 +39,7 @@ function [im, tm] = get_frame(f_num, max_tm, fps, r_slice, c_slice)
             break;
         endif
         if (exist(fname, 'file'))
+            pause(0.25); # to ensure file is full written before trying to read it!
             im = rgb2gray(imread(fname)(r_slice, c_slice, :));
             tm = (f_num - 1.0) / fps;
             for i = 2:f_num # don't delete frame1 TODO make this bit toggleable

@@ -27,7 +27,7 @@ THRESH_R = 25; # these might need some tweaking,
 THRESH_C = 7;  #  also adjust crop ranges to get rid of bits at edges
 
 START_TM = 41; # beginning of interest in s
-STOP_TM = 43;  # end of interst
+STOP_TM = 45;  # end of interst
 
 video_grab; # load functions in script file_in_loadpath
 start_conversion(VIDEO, START_TM, STOP_TM, FPS); # this runs asynchronously so should keep in front of these calcs
@@ -58,7 +58,7 @@ endfor
 
 close(z);           #closes waitbar
 clear z waittxt     #removes waitbar
-toc 
+toc
 
 #-------- control plot (check if the extraction of frames is OK)
 for i = 1:IMAGE_STEP:n_fr
