@@ -14,9 +14,11 @@ clear all, close all
 #
 pkg load image
 
-VIDEO = 'JRG_run05.avi';           # video of experimental run
-RESOLUTION = 1907 / 1220;          # pixels -> mm
+VIDEO = 'JRG_run05.avi';   # video of experimental run
+RESOLUTION = 1907 / 1220;  # pixels -> mm
 FPS = 50.0;
+DATA_STEP = 5;             # only create a data point every n video frames
+IMAGE_STEP = 25;           # record image array. NB needs to be a multiple of DATA_STEP
 
 ROW_CROP = 412:711;  # to give clear  background
 COL_CROP = 226:1705; # ditto
@@ -35,30 +37,39 @@ waittxt = 'Extracting frames...';
 z = waitbar(0, waittxt);
 
 n_fr = floor((STOP_TM - START_TM) * FPS);
-for f = 1:n_fr
-    [im{f}, tm(f)] = get_frame(f, 30.0, FPS, ROW_CROP, COL_CROP);
+images = {}; # empty cell array for images
+data = {}; # for data points
+for f = 1:DATA_STEP:n_fr
+    [im, d.tm] = get_frame(f, 30.0, FPS, ROW_CROP, COL_CROP);
     if f > 1
-        im{f} -= im{1};
+        im -= images{1};
+    endif
+    imp = posterize(im);
+    [d.top, d.front, d.area] = find_edges(imp, 193, THRESH_R, THRESH_C);
+    d.frame = f;
+    data{f} = d; # d is a struct with top,front,area,frame,tm
+    if rem(f, IMAGE_STEP) == 1 # save this image. NB im at f == 1 must be saved
+        images{f} = im;
     endif
     waitbar(f / n_fr, z);
 endfor
 
-dtime = diff(tm); # save time difference
+#dtime = diff(tm); # save time difference TODO
 
 close(z);           #closes waitbar
 clear z waittxt     #removes waitbar
 toc 
 
 #-------- control plot (check if the extraction of frames is OK)
-for i = 10:20:n_fr
-    imp = posterize(im{i});
-    [tp, frnt, area] = find_edges(imp, 193, THRESH_R, THRESH_C);
-    fig_name = sprintf('Frame at time = %5.3fs top = %d, front = %d, area = %d', tm(i), tp, frnt, area);
+for i = 1:IMAGE_STEP:n_fr
+    imp = posterize(images{i});
+    d = data{i};
+    fig_name = sprintf('Frame at time = %5.3fs top = %d, front = %d, area = %d', d.tm, d.top, d.front, d.area);
     figure('NumberTitle', 'off', 'Name', fig_name)
     colormap(jet);
     imagesc(imp);
     hold on
-    line([1, frnt, frnt], [tp, tp, size(imp)(1)]);
+    line([1, d.front, d.front], [d.top, d.top, size(imp)(1)], 'Color', 'w');
     hold off
 endfor
 
