@@ -40,7 +40,7 @@ n_fr = floor((STOP_TM - START_TM) * FPS);  #works out the number of frames by ta
 images = {}; # empty cell array for images
 data = {}; # for data points
 for f = 1:DATA_STEP:n_fr
-    [im, d.tm] = get_frame(f, 30.0, FPS, ROW_CROP, COL_CROP);  #waits 30 seconds for a specific file to a specific file to apear in frame.#
+    [im, d.tm] = get_frame(f, 30.0, FPS, ROW_CROP, COL_CROP);  #waits 30 seconds for a specific file to apear in frame.#
     if f > 1 #this loop subtracts the 1st frame from all other frames
         im -= images{1};
     endif
