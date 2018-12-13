@@ -13,20 +13,21 @@ function new_img = posterize(img)
     threshRGB = [20, 45, 70, 93, 120, 145, 170];
     value =   [10, 22, 33, 89, 193, 223, 238, 251]; # non-linear mapping need to play with this
     new_img = zeros(size(img)); # new empty image
-    new_img = imquantize(img, threshRGB, value(1,:));
+    new_img = imquantize(img, threshRGB, value);
     new_img = uint8(new_img); # has to be converted back to bytes for some reason
 endfunction
 
 im1 = load_image('testframes/vid_fr1.bmp');
 im2 = load_image('testframes/vid_fr10.bmp');
 im3 = load_image('testframes/vid_fr8.bmp');
-im4 = load_image('testframes/vid_fr9.bmp');
+im4 = load_image('testframes/vid_fr51.bmp');
 
-im = im2 - im1; # differnce from start frame
+im = im4 - im1; # differnce from start frame
 
 impo = posterize(im);
 
 figure 34
+title('at tm 2.22');
 colormap(jet); # more dramatic - look at the docs for available colormaps
 imagesc(impo);
 
