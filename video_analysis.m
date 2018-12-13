@@ -97,3 +97,5 @@ xlabel('seconds');
 legend('top mm', 'front mm', 'area mm^2 / 10', 'velocity mm/s');
 title('Turbidity change over time');
 hold off;
+
+video_tidy();
