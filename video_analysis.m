@@ -20,11 +20,11 @@ FPS = 50.0;
 DATA_STEP = 5;             # only create a data point every n video frames
 IMAGE_STEP = 50;           # record image array. NB needs to be a multiple of DATA_STEP
 
-ROW_CROP = 412:711;  # to give clear  background
+ROW_CROP = 412:711;  # this and the COL_CROP together crop the video to a specific rectangle to analyse. this mkaes analysis quicker and more accurate.
 COL_CROP = 226:1705; # ditto
 
-THRESH_R = 25; # these might need some tweaking,
-THRESH_C = 7;  #  also adjust crop ranges to get rid of bits at edges
+THRESH_R = 25; # top of tc. works out the first row that has 25 pixels of the 'right' colour (proxy for conc.)  these might need some tweaking,
+THRESH_C = 7;  # front of tc. works out the first column that has 7 pixels of the 'right' colour (proxy for conc.)  also adjust crop ranges to get rid of bits at edges
 
 START_TM = 41; # beginning of interest in s
 STOP_TM = 45;  # end of interst 
@@ -36,19 +36,19 @@ tic #starts timer
 waittxt = 'Extracting frames...';
 z = waitbar(0, waittxt);
 
-n_fr = floor((STOP_TM - START_TM) * FPS);
+n_fr = floor((STOP_TM - START_TM) * FPS);  #works out the number of frames by taking the stop time and subtracting the start time and then multiplies by the number of frames per second.
 images = {}; # empty cell array for images
 data = {}; # for data points
 for f = 1:DATA_STEP:n_fr
-    [im, d.tm] = get_frame(f, 30.0, FPS, ROW_CROP, COL_CROP);
-    if f > 1
+    [im, d.tm] = get_frame(f, 30.0, FPS, ROW_CROP, COL_CROP);  #waits 30 seconds for a specific file to apear in frame.#
+    if f > 1 #this loop subtracts the 1st frame from all other frames
         im -= images{1};
     endif
-    imp = posterize(im);
+    imp = posterize(im); #TODO save posterized?
     [d.top, d.front, d.area] = find_edges(imp, 193, THRESH_R, THRESH_C);
     d.frame = f;
     data{f} = d; # d is a struct with top,front,area,frame,tm
-    if rem(f, IMAGE_STEP) == 1 # save this image. NB im at f == 1 must be saved
+    if rem(f, IMAGE_STEP) == 1 # save this image. NB im at f == 1 must be saved. Saves an image at every image step. If image step is 5 then it will save at 1, 6, 11, 16 etc..
         images{f} = im;
     endif
     waitbar(f / n_fr, z);
