@@ -1,4 +1,7 @@
 # turbidity
+This code has been developed for a 4th year project at Liverpool University UK.
+The inital objective was to look at laboratory turbidity currents, hoever, this code could be applied (with suitable modifications) to other frame by frame video analysis
+
 video analysis using octave (matlab like) software
 
 this needs to have ffmpeg installed to extract frames from the video
@@ -9,3 +12,4 @@ of this. Ubuntu etc should just work if you install ffmpeg normally.
 
 image files will get written into, and deleted from a subfolder called
 frames which will be created if it doesn't exist.
+
