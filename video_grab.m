@@ -1,7 +1,6 @@
 #script file of video frame grab functions
 # first line can't be function, so...
 1;
-
 function start_conversion(video, start_tm, stop_tm, fps)
     # video : path and name of video file relative to 'this'
     # start_tm : first frame time in seconds
@@ -55,31 +54,48 @@ endfunction
 
 
 # posterize function creating to quantize and remap grayscale to new values
-function new_img = posterize(img)
-    threshRGB = [20, 45, 70, 93, 120, 145, 170];
-    value =   [10, 22, 33, 89, 193, 223, 238, 251]; # non-linear mapping need to play with this
+function new_img = posterize(img, THRESHOLDS, VALUES)
+    # img : grayscale to posterize
+    # THRESHOLDS : values in existing to quantize to
+    # VALUES : new values to replace into new image
     new_img = zeros(size(img)); # new empty image
-    new_img = imquantize(img, threshRGB, value);
+    #new_img = imquantize(img, threshRGB, value);
+    new_img = imquantize(img, THRESHOLDS, VALUES);
     new_img = uint8(new_img); # has to be converted back to bytes for some reason
 endfunction
 
 
 # find the top and the front of the turbity 'cloud'
-function [top_edge, front_edge, area] = find_edges(img, edge_shade, thresh_r, thresh_c)
+function [area, mean_row, mean_col, width, height] = find_edges(img, VALUES, ROW_POSN, COL_POSN)
+    # function goes through the VALUES array in reverse order finding the area,
+    # mean row, mean column, width at mean row, height at mean column. Each return
+    # value is an array of resuts, one entry for each value in VALUES
     # img : grayscale, posterized image
-    # edge_shade : value to use in determining front and top edges - see posterize function above
-    # thresh_r : number of pixels in a row to look for
-    # thresh_c : number of pixels in a column to look for
-    dk_orange = img(:,:) == edge_shade; # look for the red value, 1 if it is, 0 otherwise
-    # in case less than 8 rows or 1 colum found this is in a try catch
-    try
-        top_edge = find(sum(dk_orange, dim=2) >= thresh_r)(8); # add rows then find (nearly) first one above threshld count
-        front_edge = find(sum(dk_orange, dim=1) >= thresh_c)(end); # add cols and take last one above different thshld
-    catch
-        top_edge = size(img)(1);
-        front_edge = 1;
-    end_try_catch
-    area = sum((img(:,:) >= edge_shade)(:));
+    # VALUES : array of values to use in determining areas - see posterize function above
+    # ROW_POSN : array of numbers 1 to height of img 
+    # COL_POSN : array of number to width of img
+    area = []; mean_row = []; mean_col = []; width = []; height = [];
+    for value = VALUES # go through each contour value
+        dark_patch = img(:,:) >= value; # 1 if it's greater or equal, 0 otherwise
+        # the _v ending is for vals this loop to be added to the return arrays
+        area_v = sum(dark_patch(:));
+        if area_v > 0
+            row_sum = sum(dark_patch, dim=2)'; # sum across rows i.e. array length equals height of img NB transpose to 1,n array
+            col_sum = sum(dark_patch, dim=1); # sum down cols i.e. array length equals width of img
+            mean_row_v = sum(row_sum .* ROW_POSN) / area_v; # this is cunning! it calculates the mean horizontal
+            mean_col_v = sum(col_sum .* COL_POSN) / area_v; # and vertical positions of the dark_patch
+            width_v = row_sum(round(mean_row_v));
+            height_v = col_sum(round(mean_col_v));
+            #top_edge = find(sum(dk_orange, dim=2) >= thresh_r)(3); # add rows then find (nearly) first one above threshld count
+            #front_edge = find(sum(dk_orange, dim=1) >= thresh_c)(end); # add cols and take last one above different thshld
+        else
+            mean_row_v = 1; mean_col_v = 1; width_v = 0; height_v = 0;
+            #top_edge = size(img)(1);
+            #front_edge = 1;
+        endif
+        area(end+1) = area_v; mean_row(end+1) = mean_row_v; mean_col(end+1) = mean_col_v;
+        width(end+1) = width_v; height(end+1) = height_v;
+    endfor
 endfunction
 
 
