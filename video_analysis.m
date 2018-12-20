@@ -1,7 +1,7 @@
 # Script for image analysis of turbity current video frames 
 
 # Required external functions:
-# video_grab     script file video grab functions
+# useful_functions     script file video grab functions
 #
 
 ###########################################################################
@@ -11,7 +11,7 @@
 #
 pkg load image
 
-VIDEO = 'JRG_run05.avi';   # video of experimental run
+VIDEO = 'JRG_h00_r04.avi';   # video of experimental run
 RESOLUTION = 1000 / 1666;  # mm per pixel
 FPS = 50.0;
 DATA_STEP = 5;             # only create a data point every n video frames
@@ -23,15 +23,15 @@ COL_CROP = 226:1705; # ditto
 THRESH_R = 25; # top of tc. works out the first row that has 25 pixels of the 'right' colour (proxy for conc.)  these might need some tweaking,
 THRESH_C = 7;  # front of tc. works out the first column that has 7 pixels of the 'right' colour (proxy for conc.)  also adjust crop ranges to get rid of bits at edges
 
-START_TM = 41.65; # beginning of interest in s
-STOP_TM = 52;  # end of interst 
+START_TM = 45; # beginning of interest in s
+STOP_TM =50; # end of interst 
 
 THRESHOLDS = [20, 45, 70, 93, 120, 145, 170]; # 
-VALUES = [10, 22, 33, 89, 193, 223, 238, 251]; # non-linear mapping need to play with this
+VALUES = [10, 22, 33, 89, 193, 223, 238, 251]; # non-linear mapping need to play with this. figures relate to greyscale rgb values
 ROW_POSN = 1:size(ROW_CROP)(2); # list of numbers increasing by 1 for working out mean values of contours in find_edges
 COL_POSN = 1:size(COL_CROP)(2); # ditto but other dimension
 
-video_grab; # load functions in script file_in_loadpath
+useful_functions; # load functions in script file_in_loadpath
 
 start_conversion(VIDEO, START_TM, STOP_TM, FPS); # this runs asynchronously so should keep in front of these calcs
 
@@ -48,7 +48,7 @@ for f = 1:DATA_STEP:n_fr
         im -= images{1};
     endif
     imp = posterize(im, THRESHOLDS, VALUES); #TODO save posterized?
-    [d.area, d.mean_row, d.mean_col, d.width, d.height] = find_edges(imp, VALUES, ROW_POSN, COL_POSN);
+    [d.area, d.mean_row, d.mean_col, d.width, d.height, d.front] = find_edges(imp, VALUES, ROW_POSN, COL_POSN);
     d.frame = f;
     data{f} = d; # d is a struct with top,front,area,frame,tm
     if rem(f, IMAGE_STEP) == 1 # save this image. NB im at f == 1 must be saved. Saves an image at every image step. If image step is 5 then it will save at 1, 6, 11, 16 etc..
@@ -81,7 +81,7 @@ endfor
 
 # extracting data - probably should save it in this format anyway!
 #
-tm = []; area = []; mean_row = []; mean_col = []; width = []; height = []; frame = [];
+tm = []; area = []; mean_row = []; mean_col = []; width = []; height = []; frame = []; front = [];
 for data_rec = data
   d = data_rec{1};
   if not(isempty(d))
@@ -92,39 +92,37 @@ for data_rec = data
     height(end + 1) = d.height(5) * RESOLUTION;
     area(end + 1) = d.area(5) * (RESOLUTION ^ 2);
     frame(end + 1) = d.frame;
+    front(end + 1) = d.front(5) * RESOLUTION;
   endif
 endfor
 
 # produce plot of changes in top, front, area
+# at the moment this is calculated using the averages of the TC. Using the 5th colour.
+figure
+subplot (2,2,1)
 plot(tm, mean_row - 0.5 * height); #TODO is there any way to put distance on the top x axis? I think we could average at what times the current is at what distance.
-hold on;
+xlabel('time(s)')
+ylabel('distance(mm)')
+title('Top of TC based on the average height of the thickest part (5th strongest colour contour)')
+
+subplot (2,2,2)
 plot(tm, mean_col + 0.5 * width);
+xlabel('time(s)')
+ylabel('distance(mm)')
+title('front using average') #TODO calculations have now been update, so change this
+
+subplot (2,2,3)
 plot(tm, area / 100);
-velocities = (mean_col(2:end) + 0.5 * width(2:end) -...
-             (mean_col(1:end-1) + 0.5 * width(1:end-1))) ./ (tm(2:end) - tm(1:end-1));
+xlabel('time(s)')
+ylabel('area(mm^2) of 5th strong col')
+title('area change over time')
+
+subplot (2,2,4)
+velocities = (front(2:end) - front(1:end-1))./ (tm(2:end) - tm(1:end-1));
 velocities = max(velocities, 0.0); # get rid of initial negative velocities
 plot(tm(2:end), smooth(velocities, 0.1)); # exponential smoothing with factor of 0.1
-xlim([0.5, 12.0]);
-ylim([0.0, 750.0]);
-xlabel('seconds');
-legend('top mm', 'front mm', 'area mm^2 / 10', 'velocity mm/s');
-title('Turbidity change over time');
-hold off;
+xlabel('time(s)');
+ylabel('velocity (mm/s)')
+title('Velocity');
 
 video_tidy();
-
-# TODO put this smoothing function into video_grab and rename that file to something
-# like 'useful_functions'?
-function smoothed_vals = smooth(vals, factor)
-    # simple moving average. Uses factor of each val + (1- factor) prev av. Takes av. of first
-    # round(1 / factor) values as starting av.
-    av = vals(1);
-    n = round(1 / factor);
-    if size(vals)(2) >= n
-        av = mean(vals(1:n));
-    endif
-    smoothed_vals = [av];
-    for v = vals(2:end)
-        smoothed_vals(end + 1) = smoothed_vals(end) * (1.0 - factor) + v * factor;
-    endfor
-endfunction
