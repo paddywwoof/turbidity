@@ -66,7 +66,7 @@ endfunction
 
 
 # find the top and the front of the turbity 'cloud'
-function [area, mean_row, mean_col, width, height, front] = find_edges(img, VALUES, ROW_POSN, COL_POSN)
+function [area, mean_row, mean_col, width, height, front] = find_edges(img, VALUES, ROW_POSN, COL_POSN, THRESH_C)
     # function goes through the VALUES array in reverse order finding the area,
     # mean row, mean column, width at mean row, height at mean column. Each return
     # value is an array of resuts, one entry for each value in VALUES
@@ -88,7 +88,7 @@ function [area, mean_row, mean_col, width, height, front] = find_edges(img, VALU
             width_v = row_sum(round(mean_row_v));
             height_v = col_sum(round(mean_col_v));
             try
-                front_v = find(col_sum >= 3)(end);
+                front_v = find(col_sum >= THRESH_C)(end);
             catch
                 front_v = 0;
             end_try_catch
@@ -110,18 +110,24 @@ function video_tidy()
     delete('frames/vid_fr*.bmp')
 endfunction
 
-# TODO rename video_grab to something
-# like 'useful_function
+# Simple moving average.
 function smoothed_vals = smooth(vals, factor)
-    # simple moving average. Uses factor of each val + (1- factor) prev av. Takes av. of first
+    # Uses factor of each val + (1- factor) prev av. Takes av. of first
     # round(1 / factor) values as starting av.
-    av = vals(1);
-    n = round(1 / factor);
-    if size(vals)(2) >= n
-        av = mean(vals(1:n));
-    endif
-    smoothed_vals = [av];
-    for v = vals(2:end)
-        smoothed_vals(end + 1) = smoothed_vals(end) * (1.0 - factor) + v * factor;
+    # It will smooth n series of m values each where size is (n, m) NB the saved
+    # data is transposed ie (m, n) so needs to be smoothed *after* transposing
+    # (which has to be done prior to plotting against tm which is size (1, m)
+    smoothed_vals = [];
+    for i = 1:size(vals)(1)
+        av = vals(i, 1);
+        n = round(1 / factor);
+        if size(vals)(2) >= n
+            av = mean(vals(i, 1:n));
+        endif
+        smoothed_vals_i = [av];
+        for v = vals(i, 2:end)
+            smoothed_vals_i(end + 1) = smoothed_vals_i(end) * (1.0 - factor) + v * factor;
+        endfor
+        smoothed_vals(end + 1, :) = smoothed_vals_i;
     endfor
 endfunction

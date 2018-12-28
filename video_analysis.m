@@ -23,11 +23,12 @@ COL_CROP = 226:1705; # ditto
 THRESH_R = 25; # top of tc. works out the first row that has 25 pixels of the 'right' colour (proxy for conc.)  these might need some tweaking,
 THRESH_C = 7;  # front of tc. works out the first column that has 7 pixels of the 'right' colour (proxy for conc.)  also adjust crop ranges to get rid of bits at edges
 
-START_TM = 45; # beginning of interest in s
-STOP_TM =50; # end of interst 
+START_TM = 40; # beginning of interest in s
+STOP_TM = 47; # end of interst 
 
 THRESHOLDS = [20, 45, 70, 93, 120, 145, 170]; # 
-VALUES = [10, 22, 33, 89, 193, 223, 238, 251]; # non-linear mapping need to play with this. figures relate to greyscale rgb values
+#VALUES = [10, 22, 33, 89, 193, 223, 238, 251]; # non-linear mapping need to play with this. figures relate to greyscale rgb values
+VALUES = [10, 33, 58, 82, 103, 132, 158, 180]; # non-linear mapping need to play with this. figures relate to greyscale rgb values
 ROW_POSN = 1:size(ROW_CROP)(2); # list of numbers increasing by 1 for working out mean values of contours in find_edges
 COL_POSN = 1:size(COL_CROP)(2); # ditto but other dimension
 
@@ -40,89 +41,49 @@ waittxt = 'Extracting frames...';
 z = waitbar(0, waittxt);
 
 n_fr = floor((STOP_TM - START_TM) * FPS);  #works out the number of frames by taking the stop time and subtracting the start time and then multiplies by the number of frames per second.
-images = {}; # empty cell array for images
-data = {}; # for data points
+images = {}; # empty cell array for images indexed by frame number
+# arrays for data. Calculated values in mm
+tm = []; area = []; mean_height = []; mean_dist = []; width = []; height = []; frame = []; front = [];
+# pixel values for drawing over images
+mean_row_px = []; mean_col_px = []; width_px = []; height_px = []; front_px = [];
 for f = 1:DATA_STEP:n_fr
     [im, d.tm] = get_frame(f, 30.0, FPS, ROW_CROP, COL_CROP);  #waits 30 seconds for a specific file to apear in frame.#
     if f > 1 #this loop subtracts the 1st frame from all other frames
         im -= images{1};
     endif
     imp = posterize(im, THRESHOLDS, VALUES); #TODO save posterized?
-    [d.area, d.mean_row, d.mean_col, d.width, d.height, d.front] = find_edges(imp, VALUES, ROW_POSN, COL_POSN);
-    d.frame = f;
-    data{f} = d; # d is a struct with top,front,area,frame,tm
+    [d.area, d.mean_row, d.mean_col, d.width, d.height, d.front] = find_edges(imp, VALUES, ROW_POSN, COL_POSN, THRESH_C);
+    tm(end + 1) = d.tm;
+    frame(end + 1) = f;
+    mean_row_px(end + 1, :) = d.mean_row;
+    mean_height(end + 1, :) = (ROW_CROP(end) - ROW_CROP(1) - d.mean_row) * RESOLUTION;
+    mean_col_px(end + 1, :) = d.mean_col;
+    mean_dist(end + 1, :) = d.mean_row * RESOLUTION;
+    width_px(end + 1, :) = d.width;
+    width(end + 1, :) = d.width * RESOLUTION;
+    height_px(end + 1, :) = d.height;
+    height(end + 1, :) = d.height * RESOLUTION;
+    area(end + 1, :) = d.area * RESOLUTION ^ 2;
+    front_px(end + 1, :) = d.front;
+    front(end + 1, :) = d.front * RESOLUTION;
     if rem(f, IMAGE_STEP) == 1 # save this image. NB im at f == 1 must be saved. Saves an image at every image step. If image step is 5 then it will save at 1, 6, 11, 16 etc..
+        if f > 1
+            im = im .* (1 - edge(imp, 'Canny')); # 0 lines round the contours of the THRESHOLDS in posterized version added to im
+        endif
         images{f} = im;
     endif
     waitbar(f / n_fr, z);
 endfor
 
-#dtime = diff(tm); # save time difference TODO
-
 close(z);           #closes waitbar
 clear z waittxt     #removes waitbar
 toc
 
-#-------- control plot (check if the extraction of frames is OK)
-for i = 1:IMAGE_STEP:n_fr
-    imp = posterize(images{i}, THRESHOLDS, VALUES);
-    d = data{i};
-    fig_name = sprintf('Frame at time = %5.3fs mean row = %d, mean col = %d, area = %d', d.tm, d.mean_row(5), d.mean_col(5), d.area(5));
-    figure('NumberTitle', 'off', 'Name', fig_name)
-    colormap(jet);
-    imagesc(imp);
-    hold on
-    # TODO plot triangles for several dark areas.
-    for i = 3:size(d.mean_row)(2)
-        line([d.mean_col(i), d.mean_col(i) + 0.5 * d.width(i), d.mean_col(i), d.mean_col(i)], [d.mean_row(i), d.mean_row(i), d.mean_row(i) - 0.5 * d.height(i), d.mean_row(i)], 'Color', 'w');
-    endfor
-    hold off
-endfor
-
-# extracting data - probably should save it in this format anyway!
-#
-tm = []; area = []; mean_row = []; mean_col = []; width = []; height = []; frame = []; front = [];
-for data_rec = data
-  d = data_rec{1};
-  if not(isempty(d))
-    tm(end + 1) = d.tm;
-    mean_row(end + 1) = d.mean_row(5) * RESOLUTION;
-    mean_col(end + 1) = d.mean_col(5) * RESOLUTION;
-    width(end + 1) = d.width(5) * RESOLUTION;
-    height(end + 1) = d.height(5) * RESOLUTION;
-    area(end + 1) = d.area(5) * (RESOLUTION ^ 2);
-    frame(end + 1) = d.frame;
-    front(end + 1) = d.front(5) * RESOLUTION;
-  endif
-endfor
-
-# produce plot of changes in top, front, area
-# at the moment this is calculated using the averages of the TC. Using the 5th colour.
-figure
-subplot (2,2,1)
-plot(tm, mean_row - 0.5 * height); #TODO is there any way to put distance on the top x axis? I think we could average at what times the current is at what distance.
-xlabel('time(s)')
-ylabel('distance(mm)')
-title('Top of TC based on the average height of the thickest part (5th strongest colour contour)')
-
-subplot (2,2,2)
-plot(tm, mean_col + 0.5 * width);
-xlabel('time(s)')
-ylabel('distance(mm)')
-title('front using average') #TODO calculations have now been update, so change this
-
-subplot (2,2,3)
-plot(tm, area / 100);
-xlabel('time(s)')
-ylabel('area(mm^2) of 5th strong col')
-title('area change over time')
-
-subplot (2,2,4)
-velocities = (front(2:end) - front(1:end-1))./ (tm(2:end) - tm(1:end-1));
-velocities = max(velocities, 0.0); # get rid of initial negative velocities
-plot(tm(2:end), smooth(velocities, 0.1)); # exponential smoothing with factor of 0.1
-xlabel('time(s)');
-ylabel('velocity (mm/s)')
-title('Velocity');
+save_file = sprintf('%s.bkp', strsplit(VIDEO, '.'){1});
+save('-binary', save_file, 'images', 'mean_col', 'mean_col_px', 'mean_dist',...
+     'mean_height', 'mean_row', 'mean_row_px', 'frame', 'tm', 'front', 'front_px',...
+     'height', 'height_px', 'width', 'width_px', 'area',...
+     'COL_CROP', 'ROW_CROP', 'DATA_STEP', 'IMAGE_STEP', 'START_TM', 'STOP_TM',...
+     'RESOLUTION', 'THRESHOLDS', 'VALUES');
 
 video_tidy();
