@@ -6,25 +6,27 @@
 
 ###########################################################################
 
+#CHANGE THE FOLLOWING LINES so that they make sense for each video file
+
 # MANUAL INPUT PARAMETERS 
 # loading .avi files into matlab (Jill)#
 #
 pkg load image
 
-VIDEO = 'JRG_h00_r04.avi';   # video of experimental run
+VIDEO = 'JRG_h00_r10.avi';   # video of experimental run
 RESOLUTION = 1000 / 1666;  # mm per pixel
 FPS = 50.0;
 DATA_STEP = 5;             # only create a data point every n video frames
 IMAGE_STEP = 50;           # record image array. NB needs to be a multiple of DATA_STEP
 
-ROW_CROP = 412:711;  # this and the COL_CROP together crop the video to a specific rectangle to analyse. this mkaes analysis quicker and more accurate.
-COL_CROP = 226:1705; # ditto
+ROW_CROP = 316:594;  # y value. this and the COL_CROP together crop the video to a specific rectangle to analyse. this mkaes analysis quicker and more accurate.
+COL_CROP = 284:1742; # x value ditto
 
 THRESH_R = 25; # top of tc. works out the first row that has 25 pixels of the 'right' colour (proxy for conc.)  these might need some tweaking,
 THRESH_C = 7;  # front of tc. works out the first column that has 7 pixels of the 'right' colour (proxy for conc.)  also adjust crop ranges to get rid of bits at edges
 
-START_TM = 40; # beginning of interest in s
-STOP_TM = 47; # end of interst 
+START_TM = 42; # beginning of interest in s
+STOP_TM = 54; # end of interst 
 
 THRESHOLDS = [20, 45, 70, 93, 120, 145, 170]; # 
 #VALUES = [10, 22, 33, 89, 193, 223, 238, 251]; # non-linear mapping need to play with this. figures relate to greyscale rgb values
