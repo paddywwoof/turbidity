@@ -1,7 +1,7 @@
 pkg load image
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
 
-BKP_ROOT = 'bkp_files/JRG_h00_r%02d.bkp'; # make directory path match location of bkp files
+BKP_ROOT = 'JRG_h00_r%02d.bkp'; # make directory path match location of bkp files
 BKPS = {{4, 263.9, 19.6, 11, 103}, # the number of video i.e. ..h00_r04... padded with zeros to width 2
         {5, 252.6, 146.5, 11, -1}, # followed by row of bottom of tank, col of start of TC,
         {6, 269.0, 152.4, 9, 89},  # time index for start and stop polyfit, if line is good to end
@@ -35,6 +35,8 @@ for n = 1:length(BKPS)
   #
 endfor
 legend(key);
+xlabel('distance (mm)')
+ylabel('velocity (ms^-1)')
 
 # now find best straight line for first part of figure (need to do second one too)
 ix = find(x_vals >= 0.0 & x_vals <= 400.0); # index to values of dist <= 400

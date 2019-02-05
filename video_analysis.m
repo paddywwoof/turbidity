@@ -20,7 +20,7 @@ DATA_STEP = 5;             # only create a data point every n video frames
 IMAGE_STEP = 50;           # record image array. NB needs to be a multiple of DATA_STEP
 
 ROW_CROP = 316:594;  # y value. this and the COL_CROP together crop the video to a specific rectangle to analyse. this mkaes analysis quicker and more accurate.
-COL_CROP = 284:1742; # x value ditto
+COL_CROP = 156:1880; # x value ditto
 
 THRESH_R = 25; # top of tc. works out the first row that has 25 pixels of the 'right' colour (proxy for conc.)  these might need some tweaking,
 THRESH_C = 7;  # front of tc. works out the first column that has 7 pixels of the 'right' colour (proxy for conc.)  also adjust crop ranges to get rid of bits at edges
@@ -82,8 +82,8 @@ clear z waittxt     #removes waitbar
 toc
 
 save_file = sprintf('%s.bkp', strsplit(VIDEO, '.'){1});
-save('-binary', save_file, 'images', 'mean_col', 'mean_col_px', 'mean_dist',...
-     'mean_height', 'mean_row', 'mean_row_px', 'frame', 'tm', 'front', 'front_px',...
+save('-binary', save_file, 'images', 'mean_col_px', 'mean_dist',...
+     'mean_height', 'mean_row_px', 'frame', 'tm', 'front', 'front_px',...
      'height', 'height_px', 'width', 'width_px', 'area',...
      'COL_CROP', 'ROW_CROP', 'DATA_STEP', 'IMAGE_STEP', 'START_TM', 'STOP_TM',...
      'RESOLUTION', 'THRESHOLDS', 'VALUES');
