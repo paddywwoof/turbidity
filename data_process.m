@@ -10,7 +10,7 @@
 
 pkg load image
 
-VIDEO = 'JRG_h00_r04.avi';   # video of experimental run
+VIDEO = 'JRG_h00_r05.avi';   # video of experimental run
 
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
 
@@ -49,9 +49,10 @@ size(key)
 figure
 title ('')
 subplot (2,2,1)
-plot(tm, mean_height(:, n)' + 0.5 * height(:, n)'); #TODO is there any way to put distance on the top x axis? I think we could average at what times the current is at what distance.
+#plot(tm, mean_height(:, n)' + 0.5 * height(:, n)'); #TODO is there any way to put distance on the top x axis? I think we could average at what times the current is at what distance.
+plot(tm, mean_height(:, n) + 0.5 * height(:, n)); #removed the apostrophes and now the y axis is positive... which Jill thinks it should be, however, if this is wrong just remove this line and uncomment the one above
 xlabel('time(s)')
-ylabel('distance(mm)')
+ylabel('height(mm)')
 title('Top of TC based on the average height of the thickest part')
 legend (key)
 
