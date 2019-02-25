@@ -10,7 +10,7 @@
 
 pkg load image
 
-VIDEO = 'JRG_h00_r05.avi';   # video of experimental run
+VIDEO = 'JRG_h00_r08.avi';   # video of experimental run
 
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
 
