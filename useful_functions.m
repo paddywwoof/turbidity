@@ -66,17 +66,20 @@ endfunction
 
 
 # find the top and the front of the turbity 'cloud'
-function [area, mean_row, mean_col, width, height, front] = find_edges(img, VALUES, ROW_POSN, COL_POSN, THRESH_C)
+function [area, mean_row, mean_col, width, height, front, evol_ix] = find_edges(img, VALUES, ROW_POSN, COL_POSN, THRESH_C, do_evol)
     # function goes through the VALUES array in reverse order finding the area,
-    # mean row, mean column, width at mean row, height at mean column. Each return
+    # mean row, mean column, width at mean row, height at mean column and evol_ix
+    # which is an array of 0 or 1 representing the edge of the 2nd value in VALUES. Each return
     # value is an array of resuts, one entry for each value in VALUES
     # img : grayscale, posterized image
     # VALUES : array of values to use in determining areas - see posterize function above
     # ROW_POSN : array of numbers 1 to height of img 
     # COL_POSN : array of number to width of img
+    # do_evol : the existance of this last argument controls whether evol_ix is generated
     area = []; mean_row = []; mean_col = []; width = []; height = []; front = [];
+    evol_ix = [];
     for value = VALUES # go through each contour value
-        dark_patch = img(:,:) >= value; # 1 if it's greater or equal, 0 otherwise
+        dark_patch = uint8(img(:,:) >= value); # 1 if it's greater or equal, 0 otherwise, converted to uint8 so the edge detection can be applied
         # the _v ending is for vals this loop to be added to the return arrays
         area_v = sum(dark_patch(:));
         if area_v > 0
@@ -101,6 +104,9 @@ function [area, mean_row, mean_col, width, height, front] = find_edges(img, VALU
         endif
         area(end+1) = area_v; mean_row(end+1) = mean_row_v; mean_col(end+1) = mean_col_v;
         width(end+1) = width_v; height(end+1) = height_v; front(end+1) = front_v;
+        if value == VALUES(2) && exist("do_evol")
+            evol_ix = edge(dark_patch, "Canny");
+        endif
     endfor
 endfunction
 
