@@ -131,3 +131,38 @@ function smoothed_vals = smooth(vals, factor)
         smoothed_vals(end + 1, :) = smoothed_vals_i;
     endfor
 endfunction
+
+# alternative moving average
+function smoothed_vals = movmean(vals, k)
+  # vals is data to smooth
+  # k is the window size for averaging over
+  distr = [1:floor((k - 1) / 2) + 1, floor(k / 2):-1:1]; # triangular distribution
+  denom = sum(distr);
+  offset = floor(k / 2);
+  smoothed_vals = [];
+  for i = 1:size(vals)(1)
+    smoothed_vals(i,:) = filter(distr, denom, vals(i, :)); # filter using a normal distribution weighting
+    smoothed_vals(i, offset + 1:end - offset) = smoothed_vals(i, 2 * offset + 1:end);
+  endfor
+endfunction
+
+# Wilson et al outlier deletion and smoothing
+function smoothed_vals = wilson(vals, n, m, p, s)
+  # n is half the number of points used for the mean and std moving window (i.e. 100 points use n=50)
+  # m is the number of points at either end to average for extending
+  # p is the number of points to use for the final smoothing
+  # s is the number of standard deviations from mean to discard
+  
+  # first extend array with mean of end few
+  vals_ext = [ones(1, n) * mean(vals(1:m)), vals, ones(1, n) * mean(vals(end - m - 1:end))];
+  # make array of means of sliding window of 2n values
+  ix = (1:2 * n)' + (0:(length(vals_ext) - 2 * n - 1)); # broadcasting makes this into a 2D array
+  # i.e ix = [1,2,3..;2,3,4...;3,4,5... ]
+  v_mean = mean(vals_ext(ix), dim=1); # mean over window 2N long
+  v_std = std(vals_ext(ix), opt=0, dim=1); # std deviation based on window 2N long
+  outlier_ix = abs(vals - v_mean) >= v_std * 1.0; # index of values outside 1 std deviation
+  vals_culled = vals(:,:); # make a copy of the velicity data
+  vals_culled(outlier_ix) = v_mean(outlier_ix); # substitute the mean for the outlier indexed values
+  smoothed_vals = movmean(vals_culled, p); # finally apply moving average window
+endfunction
+

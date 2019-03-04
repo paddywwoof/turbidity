@@ -22,9 +22,10 @@ for n = 1:length(BKPS)
   load('-binary', save_file, 'tm', 'front');
   velocities = (front(2:end, 6) - front(1:end-1, 6))' ./ (tm(2:end) - tm(1:end-1));
   velocities = max(velocities, 0.0); # get rid of initial negative velocities
-  sm = smooth(velocities, 0.1); # exponential smoothing with factor of 0.1
+  #sm = smooth(velocities, 0.1); # exponential smoothing with factor of 0.1
+  sm = movmean(velocities, 5);
   x = front(2:end, 6)' - BKPS{n}{3};
-  plot(x, sm); # NB  smoothed velocity against distance
+  plot(x, sm, '.'); # NB  smoothed velocity against distance
   xlim([0.0, 800.0]);
   ylim([0.0, 300.0]);
   
