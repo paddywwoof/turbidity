@@ -36,4 +36,5 @@ endfor
 legend(key);
 xlabel('time(s)')
 ylabel('distance(mm)')
+title('fronts at greyscale 132')
 hold off

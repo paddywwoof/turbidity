@@ -19,9 +19,9 @@ plot(t{1},mean_vd{1},'r')
 plot(t{2},mean_vd{2},'b')
 plot(t{3},mean_vd{3},'g')
 plot(t{4},mean_vd{4},'m')
-plot(t{5},mean_vd{5},'c')
-plot(t{6},mean_vd{6},'k')
+#plot(t{5},mean_vd{5},'c')
+#plot(t{6},mean_vd{6},'k')
 xlabel('time (s)')
 ylabel('U (mm s^{-1})')
-legend('10 mm','40 mm','70 mm','100 mm','? mm','test of storage');
-title('velocity of turbidity currents at 0.65m downstream of the sluice gate and increasing height above base of flume')
+legend('10 mm','40 mm','70 mm','100 mm');
+title('velocity of turbidity currents at 0.15m downstream of the sluice gate and increasing height above base of flume')

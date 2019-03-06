@@ -10,7 +10,7 @@
 
 pkg load image
 
-VIDEO = 'JRG_h00_r08.avi';   # video of experimental run
+VIDEO = '023.avi';   # video of experimental run
 
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
 
@@ -32,9 +32,9 @@ for i = 1:IMAGE_STEP:n_fr
     colormap(jet);
     imagesc(images{i});
     hold on
-    for i = 3:size(mean_row_px)(2) # i.e. 3 to number of VALUES in posterized image
-        rectangle('Position', [mean_col_px(ix, i) - 0.5 * width_px(ix, i), mean_row_px(ix, i) - 0.5 * height_px(ix, i), ...
-                  width_px(ix, i), height_px(ix, i)], 'EdgeColor', jetc(VALUES(i), :));
+    for j = 3:size(mean_row_px)(2) # i.e. 3 to number of VALUES in posterized image
+        rectangle('Position', [mean_col_px(ix, j) - 0.5 * width_px(ix, j), mean_row_px(ix, j) - 0.5 * height_px(ix, j), ...
+                  width_px(ix, j), height_px(ix, j)], 'EdgeColor', jetc(VALUES(j), :));
     endfor
     hold off
 endfor

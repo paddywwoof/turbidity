@@ -13,20 +13,20 @@
 #
 pkg load image
 
-VIDEO = 'JRG_h00_r04.avi';   # video of experimental run
+VIDEO = '023.avi';   # video of experimental run
 RESOLUTION = 1000 / 1666;  # mm per pixel
 FPS = 50.0;
 DATA_STEP = 5;             # only create a data point every n video frames
 IMAGE_STEP = 50;           # record image array. NB needs to be a multiple of DATA_STEP
 
-ROW_CROP = 320:596;  # y value. this and the COL_CROP together crop the video to a specific rectangle to analyse. this mkaes analysis quicker and more accurate.
-COL_CROP = 238:1647; # x value ditto
+ROW_CROP = 322:576;  # y value. this and the COL_CROP together crop the video to a specific rectangle to analyse. this mkaes analysis quicker and more accurate.
+COL_CROP = 318:1722; # x value ditto
 
-THRESH_R = 25; # top of tc. works out the first row that has 25 pixels of the 'right' colour (proxy for conc.)  these might need some tweaking,
-THRESH_C = 7;  # front of tc. works out the first column that has 7 pixels of the 'right' colour (proxy for conc.)  also adjust crop ranges to get rid of bits at edges
+THRESH_R = 30; # top of tc. works out the first row that has 25 pixels of the 'right' colour (proxy for conc.)  these might need some tweaking,
+THRESH_C = 15;  # front of tc. works out the first column that has 7 pixels of the 'right' colour (proxy for conc.)  also adjust crop ranges to get rid of bits at edges
 
-START_TM = 42; # beginning of interest in s
-STOP_TM = 53; # end of interst 
+START_TM = 40; # beginning of interest in s
+STOP_TM = 52; # end of interst 
 
 THRESHOLDS = [20, 45, 70, 93, 120, 145, 170]; # 
 #VALUES = [10, 22, 33, 89, 193, 223, 238, 251]; # non-linear mapping need to play with this. figures relate to greyscale rgb values
@@ -57,8 +57,8 @@ for f = 1:DATA_STEP:n_fr
     [d.area, d.mean_row, d.mean_col, d.width, d.height, d.front] = find_edges(imp, VALUES, ROW_POSN, COL_POSN, THRESH_C);
     tm(end + 1) = d.tm;
     frame(end + 1) = f;
-    mean_row_px(end + 1, :) = d.mean_row;
-    mean_height(end + 1, :) = (ROW_CROP(end) - ROW_CROP(1) - d.mean_row) * RESOLUTION;
+    mean_row_px(end + 1, :) = d.mean_row; #average (middle height of the rectangle)
+    mean_height(end + 1, :) = (ROW_CROP(end) - ROW_CROP(1) - d.mean_row) * RESOLUTION; #average height in mm
     mean_col_px(end + 1, :) = d.mean_col;
     mean_dist(end + 1, :) = d.mean_row * RESOLUTION;
     width_px(end + 1, :) = d.width;
