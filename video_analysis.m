@@ -28,9 +28,9 @@ THRESH_C = 15;  # front of tc. works out the first column that has 7 pixels of t
 START_TM = 40; # beginning of interest in s
 STOP_TM = 52; # end of interst 
 
-THRESHOLDS = [20, 45, 70, 93, 120, 145, 170]; # 
-#VALUES = [10, 22, 33, 89, 193, 223, 238, 251]; # non-linear mapping need to play with this. figures relate to greyscale rgb values
-VALUES = [10, 33, 58, 82, 103, 132, 158, 180]; # non-linear mapping need to play with this. figures relate to greyscale rgb values
+THRESHOLDS = [20, 45, 70, 93, 120, 145, 170]; # light and dark grey scale values on image
+VALUES = [10, 44, 79, 113, 147, 181, 216, 250]; # 'posterising' uniform bins - linear mapping need to play with this. figures relate to greyscale rgb values
+#VALUES = [10, 33, 58, 82, 103, 132, 158, 180]; # 'posterising' non-linear mapping need to play with this. figures relate to greyscale rgb values
 ROW_POSN = 1:size(ROW_CROP)(2); # list of numbers increasing by 1 for working out mean values of contours in find_edges
 COL_POSN = 1:size(COL_CROP)(2); # ditto but other dimension
 
@@ -44,6 +44,7 @@ z = waitbar(0, waittxt);
 
 n_fr = floor((STOP_TM - START_TM) * FPS);  #works out the number of frames by taking the stop time and subtracting the start time and then multiplies by the number of frames per second.
 images = {}; # empty cell array for images indexed by frame number
+evolution_im = uint8(zeros(length(ROW_CROP), length(COL_CROP))); # empty image for storing evolution of front
 # arrays for data. Calculated values in mm
 tm = []; area = []; mean_height = []; mean_dist = []; width = []; height = []; frame = []; front = [];
 # pixel values for drawing over images
@@ -54,7 +55,7 @@ for f = 1:DATA_STEP:n_fr
         im -= images{1};
     endif
     imp = posterize(im, THRESHOLDS, VALUES); #TODO save posterized?
-    [d.area, d.mean_row, d.mean_col, d.width, d.height, d.front] = find_edges(imp, VALUES, ROW_POSN, COL_POSN, THRESH_C);
+    [d.area, d.mean_row, d.mean_col, d.width, d.height, d.front, evol_ix] = find_edges(imp, VALUES, ROW_POSN, COL_POSN, THRESH_C, 1);
     tm(end + 1) = d.tm;
     frame(end + 1) = f;
     mean_row_px(end + 1, :) = d.mean_row; #average (middle height of the rectangle)
@@ -74,6 +75,9 @@ for f = 1:DATA_STEP:n_fr
         endif
         images{f} = im;
     endif
+    if size(evol_ix) > 0
+        evolution_im = max(evolution_im, evol_ix * (f * 255 / n_fr)); 
+    endif
     waitbar(f / n_fr, z);
 endfor
 
@@ -82,7 +86,7 @@ clear z waittxt     #removes waitbar
 toc
 
 save_file = sprintf('%s.bkp', strsplit(VIDEO, '.'){1});
-save('-binary', save_file, 'images', 'mean_col_px', 'mean_dist',...
+save('-binary', save_file, 'images', 'evolution_im', 'mean_col_px', 'mean_dist',...
      'mean_height', 'mean_row_px', 'frame', 'tm', 'front', 'front_px',...
      'height', 'height_px', 'width', 'width_px', 'area',...
      'COL_CROP', 'ROW_CROP', 'DATA_STEP', 'IMAGE_STEP', 'START_TM', 'STOP_TM',...
