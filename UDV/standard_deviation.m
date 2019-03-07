@@ -23,8 +23,8 @@ for i = 1:length(d);
   mean_vd{i} = mean(csv_data(FIRST_ROW:end, FIRST_CH:LAST_CH), axis=2) * -1; # calculates the average velocity over the channels chosen
 
   # do the smoothing process here
-  #mean_vd{i} = wilson(mean_vd{i}', 50, 5, 21, 2.0); # NB I'v used 2 std as that seems more reasonbable
-  mean_vd{i} = movmean(mean_vd{i}', 31); # compare with simple smoothing
+  mean_vd{i} = wilson(mean_vd{i}', 50, 5, 15, 3.0); # NB I'v used 2 std as that seems more reasonbable
+  #mean_vd{i} = movmean(mean_vd{i}', 15); # compare with simple smoothing
 
 
   t{i} = csv_data(FIRST_ROW:end, TM_COL) * TM_FACTOR; # time of each data set in seconds (based on the frequency of the probe used)
