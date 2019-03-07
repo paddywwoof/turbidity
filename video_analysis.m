@@ -28,9 +28,9 @@ THRESH_C = 7;  # front of tc. works out the first column that has 7 pixels of th
 START_TM = 42; # beginning of interest in s
 STOP_TM = 53; # end of interst 
 
-THRESHOLDS = [20, 45, 70, 93, 120, 145, 170]; # 
-#VALUES = [10, 22, 33, 89, 193, 223, 238, 251]; # non-linear mapping need to play with this. figures relate to greyscale rgb values
-VALUES = [10, 33, 58, 82, 103, 132, 158, 180]; # non-linear mapping need to play with this. figures relate to greyscale rgb values
+THRESHOLDS = [20, 45, 70, 95, 120, 145, 170]; # 
+#VALUES =   [10, 22, 33, 89, 193, 223, 238, 251]; # non-linear mapping need to play with this. figures relate to greyscale rgb values
+VALUES =  [10, 33, 58, 82, 107, 132, 158, 182]; # non-linear mapping need to play with this. figures relate to greyscale rgb values
 ROW_POSN = 1:size(ROW_CROP)(2); # list of numbers increasing by 1 for working out mean values of contours in find_edges
 COL_POSN = 1:size(COL_CROP)(2); # ditto but other dimension
 

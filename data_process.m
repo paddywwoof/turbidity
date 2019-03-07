@@ -22,9 +22,9 @@ load('-binary', save_file, 'images', 'mean_col_px', 'mean_dist',...
      'RESOLUTION', 'THRESHOLDS', 'VALUES');
 n_fr = frame(end);
 jetc = jet(256);    # list of rgb values used by the jet colormap for 1 to 256
-
+VALUES =  [10, 44, 78, 112, 144, 182, 217, 250];
 #-------- plot difference images with boxes drawn over
-#
+#{
 for i = 1:IMAGE_STEP:n_fr
     ix = find(frame == i); # ix is the index of the data arrays where frame number == i, easiest to do this by a lookup process
     fig_name = sprintf('Frame at time = %5.3fs mean row = %d, mean col = %d, area = %d', tm(ix), mean_height(ix, 5), mean_dist(ix, 5), area(ix, 5));
@@ -32,9 +32,9 @@ for i = 1:IMAGE_STEP:n_fr
     colormap(jet);
     imagesc(images{i});
     hold on
-    for i = 3:size(mean_row_px)(2) # i.e. 3 to number of VALUES in posterized image
-        rectangle('Position', [mean_col_px(ix, i) - 0.5 * width_px(ix, i), mean_row_px(ix, i) - 0.5 * height_px(ix, i), ...
-                  width_px(ix, i), height_px(ix, i)], 'EdgeColor', jetc(VALUES(i), :));
+    for j = 3:size(mean_row_px)(2) # i.e. 3 to number of VALUES in posterized image
+        rectangle('Position', [mean_col_px(ix, j) - 0.5 * width_px(ix, j), mean_row_px(ix, j) - 0.5 * height_px(ix, j), ...
+                  width_px(ix, j), height_px(ix, j)], 'EdgeColor', jetc(VALUES(j), :));
     endfor
     hold off
 endfor
@@ -74,8 +74,9 @@ subplot (2,2,4)
 legend
 velocities = (front(2:end, n) - front(1:end-1, n))' ./ (tm(2:end) - tm(1:end-1));
 velocities = max(velocities, 0.0); # get rid of initial negative velocities
-sm = smooth(velocities, 0.1); # exponential smoothing with factor of 0.1
-plot(tm(2:end), sm);
+#sm = wilson(velocities(3,:), 50, 5, 20, 1.0); # exponential smoothing with factor of 0.1
+sm = movmean(velocities, 7);
+plot(tm(2:end), sm, '.');
 xlabel('time(s)');
 ylabel('velocity (mm/s)')
 title('Velocity');
