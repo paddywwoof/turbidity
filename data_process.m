@@ -10,7 +10,7 @@
 
 pkg load image
 
-VIDEO = 'JRG_h00_r08.avi';   # video of experimental run
+VIDEO = '023.avi';   # video of experimental run
 
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
 
@@ -22,7 +22,7 @@ load('-binary', save_file, 'images', 'mean_col_px', 'mean_dist',...
      'RESOLUTION', 'THRESHOLDS', 'VALUES');
 n_fr = frame(end);
 jetc = jet(256);    # list of rgb values used by the jet colormap for 1 to 256
-VALUES =  [10, 44, 78, 112, 144, 182, 217, 250];
+VALUES = [10, 44, 79, 113, 147, 181, 216, 250];
 #-------- plot difference images with boxes drawn over
 #{
 for i = 1:IMAGE_STEP:n_fr
@@ -74,9 +74,8 @@ subplot (2,2,4)
 legend
 velocities = (front(2:end, n) - front(1:end-1, n))' ./ (tm(2:end) - tm(1:end-1));
 velocities = max(velocities, 0.0); # get rid of initial negative velocities
-#sm = wilson(velocities(3,:), 50, 5, 20, 1.0); # exponential smoothing with factor of 0.1
-sm = movmean(velocities, 7);
-plot(tm(2:end), sm, '.');
+sm = movmean(velocities, 21); # for a smoothing factor of 21 (always an odd number), it takes a window of 10 on either side and one in the middle and averages that whole window and replaces the 'one in the middle' with this new avaerage. 21 is similar to the Wilson paper, but a more logical number.
+plot(tm(2:end), sm, "+");
 xlabel('time(s)');
 ylabel('velocity (mm/s)')
 title('Velocity');

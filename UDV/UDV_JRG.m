@@ -24,10 +24,14 @@ endfor
 
 figure
 hold on
-for i = 1:length(t) # this is more general i.e. if you had a different number of files in directory
-  plot(t{i}, mean_vd{i}, COLRS(1 + mod(i - 1, length(COLRS)))) # this mod() wraps the sequence if more than 6 files
-endfor
+<<<<<<< HEAD
+plot(t{1},mean_vd{1},'r')
+plot(t{2},mean_vd{2},'b')
+plot(t{3},mean_vd{3},'g')
+plot(t{4},mean_vd{4},'m')
+#plot(t{5},mean_vd{5},'c')
+#plot(t{6},mean_vd{6},'k')
 xlabel('time (s)')
 ylabel('U (mm s^{-1})')
-legend('10 mm','40 mm','70 mm','100 mm','? mm','test of storage'); # rather specific given the source of data 'just' iterating over whatever files happen to be in the directory. TODO link with file names in some way
-title('velocity of turbidity currents at 0.65m downstream of the sluice gate and increasing height above base of flume')
+legend('10 mm','40 mm','70 mm','100 mm');
+title('velocity of turbidity currents at 0.15m downstream of the sluice gate and increasing height above base of flume')
