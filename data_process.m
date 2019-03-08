@@ -24,7 +24,7 @@ n_fr = frame(end);
 jetc = jet(256);    # list of rgb values used by the jet colormap for 1 to 256
 VALUES = [10, 44, 79, 113, 147, 181, 216, 250];
 #-------- plot difference images with boxes drawn over
-#
+#{
 for i = 1:IMAGE_STEP:n_fr
     ix = find(frame == i); # ix is the index of the data arrays where frame number == i, easiest to do this by a lookup process
     fig_name = sprintf('Frame at time = %5.3fs mean row = %d, mean col = %d, area = %d', tm(ix), mean_height(ix, 5), mean_dist(ix, 5), area(ix, 5));
