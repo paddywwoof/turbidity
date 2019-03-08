@@ -1,6 +1,6 @@
 #FOLDER='C:\Users\Jill\turbidity\UDV'; # make sure you change 'xxx' to the right file path
 TM_COL = 1; # column with time values
-TM_FACTOR = 0.25; # to convert time values to s
+TM_FACTOR = 0.0651; # to convert time values to s
 FIRST_ROW = 4;
 FIRST_CH = 14;
 LAST_CH = 20;
