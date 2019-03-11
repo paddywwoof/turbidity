@@ -23,7 +23,7 @@ for i = 1:length(d);
   mean_vd{i} = mean(csv_data(FIRST_ROW:end, FIRST_CH:LAST_CH), axis=2) * -1; # calculates the average velocity over the channels chosen
 
   # do the smoothing process here
-  mean_vd{i} = wilson(mean_vd{i}', 50, 5, 15, 3.0); # NB I'v used 2 std as that seems more reasonbable
+  mean_vd{i} = wilson(mean_vd{i}', 50, 5, 9, 3.0); # NB I'v used 2 std as that seems more reasonbable
   #mean_vd{i} = movmean(mean_vd{i}', 15); # compare with simple smoothing
 
 
@@ -38,5 +38,5 @@ for i = 1:length(t) # this is more general i.e. if you had a different number of
 endfor
 xlabel('time (s)')
 ylabel('U (mm s^{-1})')
-legend('10 mm','40 mm','70 mm','100 mm','? mm','test of storage'); # rather specific given the source of data 'just' iterating over whatever files happen to be in the directory. TODO link with file names in some way
-title('velocity of turbidity currents at 0.65m downstream of the sluice gate and increasing height above base of flume')
+legend('10 mm','40 mm','70 mm','100 mm'); # rather specific given the source of data 'just' iterating over whatever files happen to be in the directory. TODO link with file names in some way
+title('velocity of turbidity currents at 0.9m downstream of the sluice gate and increasing height above base of flume')

@@ -10,7 +10,7 @@
 
 pkg load image
 
-VIDEO = '036.avi';   # video of experimental run
+VIDEO = '038.avi';   # video of experimental run
 
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
 
@@ -39,7 +39,7 @@ for i = 1:IMAGE_STEP:n_fr
     hold off
 endfor
 #}
-n = 4:8; # the number of the contour in VALUES to use, can be number or range
+n = 6; # the number of the contour in VALUES to use, can be number or range
 key = char(zeros(1, 20));
 for i = n
   entry = sprintf ("greyscale %d", VALUES(i));
