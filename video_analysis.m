@@ -13,19 +13,19 @@
 #
 pkg load image
 
-VIDEO = '038.avi';   # video of experimental run
+VIDEO = '043.avi';   # video of experimental run
 RESOLUTION = 1000 / 1666;  # mm per pixel
 FPS = 50.0;
 DATA_STEP = 5;             # only create a data point every n video frames
 IMAGE_STEP = 50;           # record image array. NB needs to be a multiple of DATA_STEP
 
-ROW_CROP = 369:612;  # y value. this and the COL_CROP together crop the video to a specific rectangle to analyse. this mkaes analysis quicker and more accurate.
-COL_CROP = 308:1677; # x value ditto
+ROW_CROP = 375:612;  # y value. this and the COL_CROP together crop the video to a specific rectangle to analyse. this mkaes analysis quicker and more accurate.
+COL_CROP = 331:1712; # x value ditto
 
 THRESH_R = 30; # top of tc. works out the first row that has 25 pixels of the 'right' colour (proxy for conc.)  these might need some tweaking,
 THRESH_C = 10;  # front of tc. works out the first column that has 7 pixels of the 'right' colour (proxy for conc.)  also adjust crop ranges to get rid of bits at edges
 
-START_TM = 37; # beginning of interest in s
+START_TM = 32; # beginning of interest in s
 STOP_TM = 63; # end of interst 
 
 THRESHOLDS = [20, 45, 70, 93, 120, 145, 170]; # light and dark grey scale values on image
