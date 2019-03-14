@@ -1,0 +1,9 @@
+p_ch_s       #position of first channel (mm)
+p_ch_e       #position of window end (mm)
+c_sound      #sound veolcity (m/sec)
+sto_int      #storing interval
+ch_dx        #channel distance (micron)
+doppler_coef #doppler coefficient
+speed_coef   #speed coefficient
+
+frq_prf      #pulse repetition frequency (Hz)
