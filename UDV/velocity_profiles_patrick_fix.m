@@ -3,8 +3,8 @@
 TM_COL = 1; # column with time values
 TM_FACTOR = 0.0651; # to convert time values to s
 FILES = {'JILL_024.csv','JILL_025.csv','JILL_027.csv','JILL_028.csv'}; # actual names of files <<<<<<
-FIRST_ROW_TM = [33.5, 33.5, 43.5, 37.5]; # 0.5 seconds after TC is incident pn the probe. Time in seconds for first reading <<<<<<<<<<<<<
-LAST_ROW_TM = [35.5, 35.5, 45.5, 39.5]; # jjjjjjj 1 second after first time in seconds for last reading 
+FIRST_ROW_TM = [33, 33, 43, 37]; # after TC is incident pn the probe. Time in seconds for first reading <<<<<<<<<<<<<
+LAST_ROW_TM = [33.5, 33.5, 43.5, 37.5]; # jjjjjjj 1 second after first time in seconds for last reading 
 FIRST_CH = 14;
 LAST_CH = 20;
 #DIST_A = ; #0.19mm
