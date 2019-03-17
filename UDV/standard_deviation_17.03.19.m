@@ -1,7 +1,7 @@
 #FOLDER='C:\Users\Jill\turbidity\UDV'; # make sure you change 'xxx' to the right file path
 TM_COL = 1; # column with time values
 TM_FACTOR = 0.0651; # to convert time values to s
-FILES = {'JILL_029.csv','JILL_030.csv','JILL_031.csv','JILL_032.csv'}; # actual names of files <<<<<<<<<<<<<<<<<<<<<
+FILES = {'JILL_033.csv','JILL_034.csv','JILL_035.csv','JILL_036.csv'}; # actual names of files <<<<<<<<<<<<<<<<<<<<<
 #FIRST_ROW_TM = [39.0, 35.0, 36.0, 41.0]; # time in seconds for first reading <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FIRST_ROW_TM = [1.0, 1.0, 1.0, 1.0]; # time in seconds for first reading <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FIRST_CH = 14; # *0.74mm sets the distance infront of the probe to average over

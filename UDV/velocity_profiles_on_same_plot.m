@@ -5,15 +5,15 @@ useful_functions;
 
 height = [0.0, 10.0, 40.0, 70.0, 100.0];
 
-
-mean_vt = {};
+figure
+hold on
 for i = 1:length(FILES);
   csv_data = csvread(FILES{i});
-  key = COLRS(i)
-  mean_vt{i} = csv_data(1,:);
-  plot(mean_vt, height)
+  #key = COLRS{i};
+  #mean_vh{i} = csv_data(1,:);
+  plot(csv_data, height)
 endfor
-#{
+#
 xlabel('U (mm s^{-1})')
 ylabel('Height (mm)')
 legend('15cm','55cm', '86cm')
