@@ -2,9 +2,12 @@
 
 TM_COL = 1; # column with time values
 TM_FACTOR = 0.0651; # to convert time values to s
-FILES = {'JILL_024.csv','JILL_025.csv','JILL_027.csv','JILL_028.csv'}; # actual names of files <<<<<<
-FIRST_ROW_TM = [33, 33, 43, 37]; # after TC is incident pn the probe. Time in seconds for first reading <<<<<<<<<<<<<
-LAST_ROW_TM = [33.5, 33.5, 43.5, 37.5]; # jjjjjjj 1 second after first time in seconds for last reading 
+FILES = {'JILL_029.csv','JILL_030.csv','JILL_031.csv','JILL_032.csv'}; # actual names of files <<<<<<
+FIRST_ROW_TM = [28.0, 25.0, 25.0, 28.0]; # after TC is incident pn the probe. Time in seconds for first reading <<<<<<<<<<<<<
+LAST_ROW_TM = [33.0, 30.0, 30.0, 33.0]; # jjjjjjj 1 second after first time in seconds for last reading
+# first times taken from the standard_deviation chart to allow for timing errors
+# also takes account of 1.0s offset used in that script (i.e. start of peak looks
+# to be 27.0s on 10mm line on chart -> actual time 28.0 as used above.)
 FIRST_CH = 14;
 LAST_CH = 20;
 #DIST_A = ; #0.19mm
@@ -16,9 +19,11 @@ addpath('../'); # because of this directory changing!!
 useful_functions;
 
 height = [10.0, 40.0, 70.0, 100.0]; #<@<@<@<@<@<@<@
+#height = [0.0, 10.0, 40.0, 70.0, 100.0]; #<@<@<@<@<@<@<@
 
 mean_vd = {};
 mean_vt = [0.0, 0.0, 0.0, 0.0]; # could also do zeros(1, 4); <@<@<@<@<@<@<@<@
+#mean_vt = [0.0, 0.0, 0.0, 0.0, 0.0]; # could also do zeros(1, 4); <@<@<@<@<@<@<@<@
 t = {};
 
 for i = 1:length(FILES); # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -27,6 +32,7 @@ for i = 1:length(FILES); # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   last_row = floor(LAST_ROW_TM / TM_FACTOR); #jjjjjj
   mean_vd{i} = mean(csv_data(first_row:last_row, FIRST_CH:LAST_CH), axis=2) * -1; # <<<calculates the average velocity over the channels chosen
   mean_vt(1, i) = mean(mean_vd{i});  #<@<@<@<@<@ calculates the average velocity over the specific distance, for a specific time bracket.
+  #mean_vt(1, i + 1) = mean(mean_vd{i});  #<@<@<@<@<@ calculates the average velocity over the specific distance, for a specific time bracket.
   t{i} = csv_data(first_row:last_row, TM_COL) * TM_FACTOR - FIRST_ROW_TM(i); # <<<<<< time of each data set in seconds (based on the frequency of the probe used)
 endfor
 

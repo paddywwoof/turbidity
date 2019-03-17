@@ -9,25 +9,28 @@ BKPS = {{4, 263.9, 19.6, 11, 103}, # the number of video i.e. ..h00_r04... padde
         {8, 260.7, 146.1, 20, -1},
         {9, 262.3, 140.6, 25, -1},
         {10, 262.3, 144.5, 20, -1}};
+#BKPS = 21:33;
 key = char(zeros(1, 5)); #vid04 etc
 
 x_vals = [];
 v_vals = [];
 
 figure
-hold on
+hold('on'); # to make each file plot on the same graph
 for n = 1:length(BKPS)
-  save_file = sprintf(BKP_ROOT, BKPS{n}{1});
+  save_file = sprintf(BKP_ROOT, BKPS{n}{1}); # BKPS(n)
   key(n,:) = sprintf('vid%02d', BKPS{n}{1});
   load('-binary', save_file, 'tm', 'front');
-  velocities = (front(2:end, 6) - front(1:end-1, 6))' ./ (tm(2:end) - tm(1:end-1));
-  velocities = max(velocities, 0.0); # get rid of initial negative velocities
+  velocities = (front(2:end, 6) - front(1:end-1, 6))' ./ (tm(2:end) - tm(1:end-1)); # i.e. this is just using col #6 i.e. greyscale 181
+  #velocities = max(velocities, 0.0); # get rid of initial negative velocities
   #sm = smooth(velocities, 0.1); # exponential smoothing with factor of 0.1
-  sm = movmean(velocities, 5);
-  x = front(2:end, 6)' - BKPS{n}{3};
+  #sm = movmean(velocities, 5);
+  sm = wilson(velocities, 24, 5, 15, 3);
+  #x = front(2:end, 6)' - BKPS{n}{3}; # i.e. this is just using col #6 i.e. greyscale 181
+  x = front(2:end, 6)'; # i.e. this is just using col #6 i.e. greyscale 181
   plot(x, sm, '.'); # NB  smoothed velocity against distance
   xlim([0.0, 800.0]);
-  ylim([0.0, 300.0]);
+  #ylim([0.0, 300.0]);
   
   if n != 1 & n != 3 # these look dodgy results
     x_vals = [x_vals, x]; # this is how to concatenate arrays in matlabroot
@@ -38,7 +41,7 @@ endfor
 legend(key);
 xlabel('distance (mm)')
 ylabel('velocity (ms^-1)')
-
+#{
 # now find best straight line for first part of figure (need to do second one too)
 ix = find(x_vals >= 0.0 & x_vals <= 400.0); # index to values of dist <= 400
 [p, S] = polyfit(x_vals(ix), v_vals(ix), 1); # polynomial order 1 -> strt line
@@ -58,6 +61,15 @@ ix = find(x_vals > 400.0 & x_vals <= 750.0); # index to values of dist > 400
 printf(' error +/- %d', 2 * delta(1))
 plot(x_vals(ix), v_fit, 'r-');
 plot(x_vals(ix), v_fit + 2 * delta, 'm--', x_vals(ix), v_fit - 2 * delta, 'm--')
+#}
+ix = find(x_vals > 200.0 & x_vals <= 800.0); # index to values of dist > 400
+[p, S] = polyfit(x_vals(ix), v_vals(ix), 2); # polynomial order 1 -> strt line
+[v_fit, delta] = polyval(p, x_vals(ix), S);
+# delta is estimate of std error at values of x. i.e. 95% error bars would be
+# +/- 2 * delta
+printf(' error +/- %d', 2 * delta(1))
+plot(x_vals(ix), v_fit, 'r-');
+plot(x_vals(ix), v_fit + 2 * delta, 'm--', x_vals(ix), v_fit - 2 * delta, 'm--')
 
 # or fit a curve to the data - need to think about the likely physics
-hold off
+hold('off'); # any plot after now produce a new graph (or overwrite last one)

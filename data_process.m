@@ -10,11 +10,13 @@
 
 pkg load image
 
-VIDEO = '023.avi';   # video of experimental run
+#VIDEO = '023.avi';   # video of experimental run
+VIDEO = 'JRG_h00_r10.avi';   # video of experimental run
 
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
 
-save_file = sprintf('%s.bkp', strsplit(VIDEO, '.'){1});
+file_stem = strsplit(VIDEO, '.'){1};
+save_file = sprintf('%s.bkp', file_stem);
 load('-binary', save_file, 'images', 'mean_col_px', 'mean_dist',...
      'mean_height', 'mean_row_px', 'frame', 'tm', 'front', 'front_px',...
      'height', 'height_px', 'width', 'width_px', 'area',...
@@ -23,8 +25,13 @@ load('-binary', save_file, 'images', 'mean_col_px', 'mean_dist',...
 n_fr = frame(end);
 jetc = jet(256);    # list of rgb values used by the jet colormap for 1 to 256
 VALUES = [10, 44, 79, 113, 147, 181, 216, 250];
+
+if not(exist(file_stem, 'file')) # create a directory for pictures and data if it's not there already
+    mkdir(file_stem)
+endif
+
 #-------- plot difference images with boxes drawn over
-#
+#{
 for i = 1:IMAGE_STEP:n_fr
     ix = find(frame == i); # ix is the index of the data arrays where frame number == i, easiest to do this by a lookup process
     fig_name = sprintf('Frame at time = %5.3fs mean row = %d, mean col = %d, area = %d', tm(ix), mean_height(ix, 5), mean_dist(ix, 5), area(ix, 5));
@@ -37,6 +44,8 @@ for i = 1:IMAGE_STEP:n_fr
                   width_px(ix, j), height_px(ix, j)], 'EdgeColor', jetc(VALUES(j), :));
     endfor
     hold off
+    print(sprintf('%s/picciwicci%5.3f.jpg', file_stem, tm(ix))); # %s is replaced by first variable (file_stem) and treated as string...
+    # %5.3f is replaced by second variable tm(ix) and treated as floating point 5 wide to 3 dec places
 endfor
 #}
 n = 4:8; # the number of the contour in VALUES to use, can be number or range
@@ -75,7 +84,16 @@ legend
 velocities = (front(2:end, n) - front(1:end-1, n))' ./ (tm(2:end) - tm(1:end-1));
 velocities = max(velocities, 0.0); # get rid of initial negative velocities
 sm = movmean(velocities, 21); # for a smoothing factor of 21 (always an odd number), it takes a window of 10 on either side and one in the middle and averages that whole window and replaces the 'one in the middle' with this new avaerage. 21 is similar to the Wilson paper, but a more logical number.
-plot(tm(2:end), sm, "+");
-xlabel('time(s)');
+plot(front(2:end, 4)', sm); # NB front now needs transposing. All plotted agains distance
+# that front of greyscale #4 i.e. 113 has travelled
+xlabel('distance(mm)');
+#plot(tm(2:end), sm); 
+#xlabel('time(s)');
 ylabel('velocity (mm/s)')
 title('Velocity');
+
+# front is as expected with cols for different greyscales and rows for time
+csvwrite(sprintf('%s/front.csv', file_stem), front); # %s is replaced by first variable (file_stem) and treated as string...
+# sm (smoothed velocity) has been transposed so cols are time and rows diff greyscales
+# so NB apostrophe
+csvwrite(sprintf('%s/sm.csv', file_stem), sm'); # %s is replaced by first variable (file_stem) and treated as string...
