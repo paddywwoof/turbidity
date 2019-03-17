@@ -5,7 +5,8 @@ useful_functions;
 
 height = [0.0, 10.0, 40.0, 70.0, 100.0];
 
-figure
+#
+fig1 = figure;
 hold on
 for i = 1:length(FILES);
   csv_data = csvread(FILES{i});
@@ -13,9 +14,16 @@ for i = 1:length(FILES);
   #mean_vh{i} = csv_data(1,:);
   plot(csv_data, height)
 endfor
-#
+
 xlabel('U (mm s^{-1})')
 ylabel('Height (mm)')
 legend('15cm','55cm', '86cm')
 title('Velocity profiles with varying distance down stream')
-holdoff
+#holdoff
+saveas(fig1, 'velocity_profiles.jpeg')
+#}
+
+#{
+figure
+subplot(1,3)
+plot(csv_data{i},height)
