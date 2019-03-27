@@ -10,8 +10,8 @@
 
 pkg load image
 
-#VIDEO = '023.avi';   # video of experimental run
-VIDEO = 'JRG_h00_r10.avi';   # video of experimental run
+VIDEO = '055.avi';   # video of experimental run
+#VIDEO = 'JRG_h00_r10.avi';   # video of experimental run
 
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
 
@@ -97,3 +97,5 @@ csvwrite(sprintf('%s/front.csv', file_stem), front); # %s is replaced by first v
 # sm (smoothed velocity) has been transposed so cols are time and rows diff greyscales
 # so NB apostrophe
 csvwrite(sprintf('%s/sm.csv', file_stem), sm'); # %s is replaced by first variable (file_stem) and treated as string...
+csvwrite(sprintf('%s/height.csv', file_stem), height);
+csvwrite(sprintf('%s/area.csv', file_stem), area);

@@ -1,9 +1,9 @@
 #To get an image to get the crop pixels from gimp
 
 
-video = "043.avi";
-start_tm = 32;
-stop_tm = 63;
+video = "055.avi";
+start_tm = 26;
+stop_tm = 49;
 frame_tm = (start_tm + stop_tm) * 0.5;
 
 
