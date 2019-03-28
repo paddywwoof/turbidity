@@ -3,13 +3,13 @@
 TM_COL = 1; # column with time values
 TM_FACTOR = 0.0651; # to convert time values to s
 FILES = {'JILL_033.csv','JILL_034.csv','JILL_035.csv','JILL_036.csv'};  # actual names of files <<<<<<
-FIRST_ROW_TM = [22.0, 19.0, 26.0, 29.0]; # after TC is incident pn the probe. Time in seconds for first reading <<<<<<<<<<<<<
-LAST_ROW_TM = [27.0, 24.0, 31.0, 34.0]; # jjjjjjj 1 second after first time in seconds for last reading
+FIRST_ROW_TM = [25.0, 18.0, 25.0, 23.0]; # after TC is incident pn the probe. Time in seconds for first reading <<<<<<<<<<<<<
+LAST_ROW_TM = [30.0, 23.0, 30.0, 27.0]; # jjjjjjj 1 second after first time in seconds for last reading
 # first times taken from the standard_deviation chart to allow for timing errors
 # also takes account of 1.0s offset used in that script (i.e. start of peak looks
 # to be 27.0s on 10mm line on chart -> actual time 28.0 as used above.)
-FIRST_CH = 14;
-LAST_CH = 20;
+FIRST_CH = 123;
+LAST_CH = 128;
 #DIST_A = ; #0.19mm
 #DIST_B = ; #0.55mm
 #DIST_C = ; #0.90mm
@@ -40,6 +40,6 @@ figure
 plot(mean_vt, height)
 xlabel('U (mm s^{-1})')
 ylabel('Height (mm)')
-title('Velocity profile at 0.90m downstream of the sluice-gate')
+title('Velocity profile at 0.65m downstream of the sluice-gate')
 
-csvwrite('UDV_velocity_profllie_90cm.csv', mean_vt);
+csvwrite('Velocity profile at 65cm downstream of the sluicegate.csv', mean_vt);
