@@ -1,29 +1,45 @@
-FILES = {'UDV_velocity_profllie_15cm.csv','UDV_velocity_profllie_51cm.csv','UDV_velocity_profllie_90cm.csv'};
+#FOLDER='C:\Users\Jill\turbidity\UDV'; # make sure you change 'xxx' to the right file path
 
-COLRS = ['r', 'b','m'];
+TM_COL = 1; # column with time values
+TM_FACTOR = 0.0651; # to convert time values to s
+FILES = {'JILL_033.csv','JILL_034.csv','JILL_035.csv','JILL_036.csv'};  # actual names of files <<<<<<
+FIRST_ROW_TM = [25.0, 18.0, 25.0, 23.0]; # after TC is incident pn the probe. Time in seconds for first reading <<<<<<<<<<<<<
+LAST_ROW_TM = [30.0, 23.0, 30.0, 27.0]; # jjjjjjj 1 second after first time in seconds for last reading
+# first times taken from the standard_deviation chart to allow for timing errors
+# also takes account of 1.0s offset used in that script (i.e. start of peak looks
+# to be 27.0s on 10mm line on chart -> actual time 28.0 as used above.)
+FIRST_CH = 123;
+LAST_CH = 128;
+#DIST_A = ; #0.19mm
+#DIST_B = ; #0.55mm
+#DIST_C = ; #0.90mm
+COLRS = ['r', 'b', 'g', 'm', 'c', 'k']; # use these colours sequentially
+ 
+addpath('../'); # because of this directory changing!!
 useful_functions;
 
-height = [0.0, 10.0, 40.0, 70.0, 100.0];
+#height = [10.0, 40.0, 70.0, 100.0]; #<@<@<@<@<@<@<@
+height = [0.0, 10.0, 40.0, 70.0, 100.0]; #<@<@<@<@<@<@<@
 
-#
-fig1 = figure;
-hold on
-for i = 1:length(FILES);
-  csv_data = csvread(FILES{i});
-  #key = COLRS{i};
-  #mean_vh{i} = csv_data(1,:);
-  plot(csv_data, height)
+mean_vd = {};
+#mean_vt = [0.0, 0.0, 0.0, 0.0]; # could also do zeros(1, 4); <@<@<@<@<@<@<@<@
+mean_vt = [0.0, 0.0, 0.0, 0.0, 0.0]; # could also do zeros(1, 4); <@<@<@<@<@<@<@<@
+t = {};
+
+for i = 1:length(FILES); # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  csv_data = csvread(FILES{i}); # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  first_row = floor(FIRST_ROW_TM / TM_FACTOR); # have to make into an int <<< should do a check here that time isn't off the end! i.e. first_row < length(csv_data)
+  last_row = floor(LAST_ROW_TM / TM_FACTOR); #jjjjjj
+  mean_vd{i} = mean(csv_data(first_row:last_row, FIRST_CH:LAST_CH), axis=2) * -1; # <<<calculates the average velocity over the channels chosen
+  #mean_vt(1, i) = mean(mean_vd{i});  #<@<@<@<@<@ calculates the average velocity over the specific distance, for a specific time bracket.
+  mean_vt(1, i + 1) = mean(mean_vd{i});  #<@<@<@<@<@ calculates the average velocity over the specific distance, for a specific time bracket.
+  t{i} = csv_data(first_row:last_row, TM_COL) * TM_FACTOR - FIRST_ROW_TM(i); # <<<<<< time of each data set in seconds (based on the frequency of the probe used)
 endfor
 
+figure
+plot(mean_vt, height)
 xlabel('U (mm s^{-1})')
 ylabel('Height (mm)')
-legend('15cm','55cm', '86cm')
-title('Velocity profiles with varying distance down stream')
-#holdoff
-saveas(fig1, 'velocity_profiles.jpeg')
-#}
+title('Velocity profile at 0.65m downstream of the sluice-gate')
 
-#{
-figure
-subplot(1,3)
-plot(csv_data{i},height)
+csvwrite('Velocity profile at 65cm downstream of the sluicegate.csv', mean_vt);
