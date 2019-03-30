@@ -10,9 +10,7 @@ LAST_ROW_TM = [30.0, 23.0, 30.0, 27.0]; # jjjjjjj 1 second after first time in s
 # to be 27.0s on 10mm line on chart -> actual time 28.0 as used above.)
 FIRST_CH = 123;
 LAST_CH = 128;
-#DIST_A = ; #0.19mm
-#DIST_B = ; #0.55mm
-#DIST_C = ; #0.90mm
+
 COLRS = ['r', 'b', 'g', 'm', 'c', 'k']; # use these colours sequentially
  
 addpath('../'); # because of this directory changing!!
@@ -36,6 +34,28 @@ for i = 1:length(FILES); # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   t{i} = csv_data(first_row:last_row, TM_COL) * TM_FACTOR - FIRST_ROW_TM(i); # <<<<<< time of each data set in seconds (based on the frequency of the probe used)
 endfor
 
+UaveZ1 = 0;
+for i = 1:(length(mean_vt) -1);
+  UaveZ1 += (height(i+1) - height(i)) * (mean_vt(i+1) + mean_vt(i)) * 0.5; #intergral equation thought of as a graph (trapeziumm rule)
+endfor
+UaveZ1 /= 1e6; # changing from mm to m( height and velocity are in mm)
+
+U2aveZ1 = 0;
+for i = 1:(length(mean_vt) -1);
+  U2aveZ1 += (height(i+1) - height(i)) * ((mean_vt(i+1))^2 + (mean_vt(i))^2) * 0.5; #intergral equation thought of as a graph (trapeziumm rule)
+endfor
+U2aveZ1 /= 1e9; #changing from mm to m (height and velcity are measured in mm)
+
+Uave = U2aveZ1/UaveZ1;
+
+Z1 = UaveZ1^2/U2aveZ1;
+
+g_prime = 9.81*(1004.67 - 1000)/1000;
+Frb = Uave/(g_prime * Z1 * cos (deg2rad(0.27)))^0.5
+
+nu = 8.9e-4/1000;
+Reb = UaveZ1/ nu
+  
 figure
 plot(mean_vt, height)
 xlabel('U (mm s^{-1})')
@@ -43,3 +63,4 @@ ylabel('Height (mm)')
 title('Velocity profile at 0.65m downstream of the sluice-gate')
 
 csvwrite('Velocity profile at 65cm downstream of the sluicegate.csv', mean_vt);
+csvwrite('Frb and Reb at 65cm.csv', [Frb, Reb]);
