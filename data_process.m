@@ -11,7 +11,7 @@
 pkg load image
 
 #VIDEO = '023.avi';   # video of experimental run
-VIDEO = 'JRG_h00_r10.avi';   # video of experimental run
+VIDEO = '048.avi';   # video of experimental run
 
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
 
@@ -31,20 +31,30 @@ if not(exist(file_stem, 'file')) # create a directory for pictures and data if i
 endif
 
 #-------- plot difference images with boxes drawn over
-#{
+#
 for i = 1:IMAGE_STEP:n_fr
     ix = find(frame == i); # ix is the index of the data arrays where frame number == i, easiest to do this by a lookup process
     fig_name = sprintf('Frame at time = %5.3fs mean row = %d, mean col = %d, area = %d', tm(ix), mean_height(ix, 5), mean_dist(ix, 5), area(ix, 5));
     figure('NumberTitle', 'off', 'Name', fig_name)
     colormap(jet);
-    imagesc(images{i});
+    sz_im = size(images{i});
+    im = imagesc(images{i});
+    xticklabels = [103, 200:100:800]; # tick at 100 doesn't show so tweak
+    xtick = (xticklabels - 100) / RESOLUTION; # tick positions converted back to pixel locations
+    xticklabels(1) = 100; # then correct value
+    set(gca, 'XTick', xtick, 'XTickLabel', xticklabels);
+    yticklabels = [0:50:100, 146]; # put the tick just before end of axis
+    ytick = sz_im(1) - yticklabels / RESOLUTION;
+    yticklabels(end) = 150;
+    set(gca, 'YTick', ytick, 'YTickLabel', yticklabels);
+    set(gca, 'DataAspectRatio', [1, 0.5, 1]); # [x, y, z] scaling NB 0.5 makes it twice as big on the chart
     hold on
     for j = 3:size(mean_row_px)(2) # i.e. 3 to number of VALUES in posterized image
         rectangle('Position', [mean_col_px(ix, j) - 0.5 * width_px(ix, j), mean_row_px(ix, j) - 0.5 * height_px(ix, j), ...
                   width_px(ix, j), height_px(ix, j)], 'EdgeColor', jetc(VALUES(j), :));
     endfor
     hold off
-    print(sprintf('%s/picciwicci%5.3f.jpg', file_stem, tm(ix))); # %s is replaced by first variable (file_stem) and treated as string...
+    #print(sprintf('%s/picciwicci%5.3f.jpg', file_stem, tm(ix))); # %s is replaced by first variable (file_stem) and treated as string...
     # %5.3f is replaced by second variable tm(ix) and treated as floating point 5 wide to 3 dec places
 endfor
 #}
