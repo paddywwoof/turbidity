@@ -3,12 +3,12 @@
 TM_COL = 1; # column with time values
 TM_FACTOR = 0.1302; # to convert time values to s
 
-FILES = {'JILL_031.csv'}; # actual names of files <<<<<<<<<<<<<<<<<<<<<
+FILES = {'JILL_055.csv'}; # actual names of files <<<<<<<<<<<<<<<<<<<<<
 
 #FIRST_ROW_TM = [39.0, 35.0, 36.0, 41.0]; # time in seconds for first reading <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 FIRST_ROW_TM = [1.0]; # time in seconds for first reading 
-FIRST_CH = 2; # *0.74mm per channel. sets the distance infront of the probe to average over
-LAST_CH = 9; # *0.74mm per channel. sets the distance infront of the probe to stop averaging over
+FIRST_CH = 122; # *0.74mm per channel. sets the distance infront of the probe to average over
+LAST_CH = 128; # *0.74mm per channel. sets the distance infront of the probe to stop averaging over
 COLRS = ['r', 'b', 'g', 'm', 'c', 'k']; # use these colours sequentially
 
 addpath('../'); # because of this directory changing!!
@@ -46,7 +46,7 @@ for i = 1:length(t) # this is more general i.e. if you had a different number of
 endfor
 xlabel('time (s)')
 ylabel('U (mm s^{-1})')
-legend('19 cm'); # rather specific given the source of data 'just' iterating over whatever files happen to be in the directory. TODO link with file names in some way
-title('UDV above 60mm obstacle')
+legend('10 mm', '40 mm', '70 mm', '100 mm'); # rather specific given the source of data 'just' iterating over whatever files happen to be in the directory. TODO link with file names in some way
+title('Velocity profile at 15 cm')
 
-saveas(fig1,'UDV above 60mm obstacle.jpeg')
+saveas(fig1,'Velocity profile at 15 cm.jpeg')

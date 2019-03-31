@@ -1,14 +1,14 @@
 #FOLDER='C:\Users\Jill\turbidity\UDV'; # make sure you change 'xxx' to the right file path
 
 TM_COL = 1; # column with time values
-TM_FACTOR = 0.0651; # to convert time values to s
-FILES = {'JILL_033.csv','JILL_034.csv','JILL_035.csv','JILL_036.csv'};  # actual names of files <<<<<<
-FIRST_ROW_TM = [25.0, 18.0, 25.0, 23.0]; # after TC is incident pn the probe. Time in seconds for first reading <<<<<<<<<<<<<
-LAST_ROW_TM = [30.0, 23.0, 30.0, 27.0]; # jjjjjjj 1 second after first time in seconds for last reading
+TM_FACTOR = 0.1302; # to convert time values to s
+FILES = {'JILL_055.csv'};  # actual names of files <<<<<<
+FIRST_ROW_TM = [48.7]; # after TC is incident pn the probe. Time in seconds for first reading <<<<<<<<<<<<<
+LAST_ROW_TM = [53.7]; # jjjjjjj 1 second after first time in seconds for last reading
 # first times taken from the standard_deviation chart to allow for timing errors
 # also takes account of 1.0s offset used in that script (i.e. start of peak looks
 # to be 27.0s on 10mm line on chart -> actual time 28.0 as used above.)
-FIRST_CH = 123;
+FIRST_CH = 122;
 LAST_CH = 128;
 
 COLRS = ['r', 'b', 'g', 'm', 'c', 'k']; # use these colours sequentially
@@ -60,7 +60,7 @@ figure
 plot(mean_vt, height)
 xlabel('U (mm s^{-1})')
 ylabel('Height (mm)')
-title('Velocity profile at 0.65m downstream of the sluice-gate')
+title('Velocity profile at 0.86m downstream of the sluice-gate')
 
-csvwrite('Velocity profile at 65cm downstream of the sluicegate.csv', mean_vt);
-csvwrite('Frb and Reb at 65cm.csv', [Frb, Reb]);
+csvwrite('UDV for 100mm at 40.csv', mean_vt);
+csvwrite('Frb and Reb for 100mm at 40.csv', [Frb, Reb]); # in the file, the 1st number if the Froude and the 2nd is the Reynolds
