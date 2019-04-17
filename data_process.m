@@ -55,7 +55,7 @@ for i = 1:IMAGE_STEP:n_fr
                   width_px(ix, j), height_px(ix, j)], 'EdgeColor', jetc(VALUES(j), :));
     endfor
     hold off
-    #print(sprintf('%s/picciwicci%5.3f.jpg', file_stem, tm(ix))); # %s is replaced by first variable (file_stem) and treated as string...
+    print(sprintf('%s/post_im_at_%5.3f.jpg', file_stem, tm(ix))); # %s is replaced by first variable (file_stem) and treated as string...
     # %5.3f is replaced by second variable tm(ix) and treated as floating point 5 wide to 3 dec places
 endfor
 #}
