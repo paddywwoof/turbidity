@@ -39,7 +39,7 @@ for n = 1:length(BKPS)
   end_from = min(length(front), STATS_SZ + offset); # determine the offset value to use
   stats(start_to: end_to, n) = front(start_from: end_from, 6); # copy front array to stats with offset
 endfor
-
+key(end+1,:) = 'error';
 plot(tm(1:end), stats); # TODO check tm same length as stats
 xlim([0.0, 12.0]);
 ylim([0.0, 1000.0]);
@@ -56,7 +56,7 @@ means = nanmean(stats, axis=2); # nanmean ignores NaN values, handy
 # needs to count non NaN values as there isn't a nancount()
 stderr = nanstd(stats, flag=0, axis=2) ./ sum(!isnan(stats), axis=2) .^ 0.5;
 # draw error bars. This might be better displayed differently.
-errorbar(tm(1:STATS_SZ), means, stderr * 2.0);
-
+errorbar(tm(1:STATS_SZ), means, stderr * 2.0, 'b');
+legend(key);
 hold off
 
