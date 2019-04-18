@@ -57,4 +57,6 @@ means = nanmean(stats, axis=2); # nanmean ignores NaN values, handy
 stderr = nanstd(stats, flag=0, axis=2) ./ sum(!isnan(stats), axis=2) .^ 0.5;
 # draw error bars. This might be better displayed differently.
 errorbar(tm(1:STATS_SZ), means, stderr * 2.0);
+
 hold off
+
