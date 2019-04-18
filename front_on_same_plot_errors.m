@@ -26,7 +26,7 @@ stats = zeros(STATS_SZ, length(BKPS)); # to hold the shifted data
 stats(:,:) = NaN; # to enable later use of nanmean(), nanstd() for different lengths of useful arrays 
 key = char(zeros(1, 5)); #vid04 etc. filled in the loop below
 
-figure
+h = figure
 hold on
 for n = 1:length(BKPS)
   save_file = sprintf(BKP_ROOT, BKPS{n}{1}); # construct file name
@@ -44,6 +44,7 @@ plot(tm(1:end), stats); # TODO check tm same length as stats
 xlim([0.0, 12.0]);
 ylim([0.0, 1000.0]);
 
+key(end+1, :) = 'error';
 legend(key);
 xlabel('time(s)')
 ylabel('distance(mm)')
@@ -56,7 +57,10 @@ means = nanmean(stats, axis=2); # nanmean ignores NaN values, handy
 # needs to count non NaN values as there isn't a nancount()
 stderr = nanstd(stats, flag=0, axis=2) ./ sum(!isnan(stats), axis=2) .^ 0.5;
 # draw error bars. This might be better displayed differently.
-errorbar(tm(1:STATS_SZ), means, stderr * 2.0);
+errorbar(tm(1:STATS_SZ), means, stderr * 2.0,'k');
 
+legend(key);
 hold off
+
+save('-binary', 'unobstructed_mean_tmVSdst.bkp', 'means', 'stderr') # swop save to load, whe you use this in other scripts.
 
