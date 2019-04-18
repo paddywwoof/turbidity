@@ -55,7 +55,7 @@ for i = 1:IMAGE_STEP:n_fr
                   width_px(ix, j), height_px(ix, j)], 'EdgeColor', jetc(VALUES(j), :));
     endfor
     hold off
-    #print(sprintf('%s/picciwicci%5.3f.jpg', file_stem, tm(ix))); # %s is replaced by first variable (file_stem) and treated as string...
+    print(sprintf('%s/post_im_at_%5.0f.jpg', file_stem, tm(ix))); # %s is replaced by first variable (file_stem) and treated as string...
     # %5.3f is replaced by second variable tm(ix) and treated as floating point 5 wide to 3 dec places
 endfor
 #}
@@ -78,7 +78,7 @@ legend (key)
 
 subplot (2,2,2)
 legend
-plot(tm, front(:, n)');
+plot(tm, front(:, n)' + 100);
 xlabel('time(s)')
 ylabel('distance(mm)')
 title('front using average') #TODO calculations have now been update, so change this
@@ -95,7 +95,7 @@ legend
 velocities = (front(2:end, n) - front(1:end-1, n))' ./ (tm(2:end) - tm(1:end-1));
 velocities = max(velocities, 0.0); # get rid of initial negative velocities
 sm = movmean(velocities, 21); # for a smoothing factor of 21 (always an odd number), it takes a window of 10 on either side and one in the middle and averages that whole window and replaces the 'one in the middle' with this new avaerage. 21 is similar to the Wilson paper, but a more logical number.
-plot(front(2:end, 4)', sm); # NB front now needs transposing. All plotted agains distance
+plot(front(2:end, 4)' + 100, sm); # NB front now needs transposing. All plotted agains distance
 # that front of greyscale #4 i.e. 113 has travelled
 xlabel('distance(mm)');
 #plot(tm(2:end), sm); 
