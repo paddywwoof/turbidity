@@ -11,7 +11,7 @@
 pkg load image
 
 
-VIDEO = '055.avi';   # video of experimental run
+VIDEO = '026.avi';   # video of experimental run
 #VIDEO = 'JRG_h00_r10.avi';   # video of experimental run
 
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
@@ -40,7 +40,7 @@ for i = 1:IMAGE_STEP:n_fr
     colormap(jet);
     sz_im = size(images{i});
     images{i}(1:4,1:4) = 0;
-    images{i}(1:4,5:8) = 255;
+    images{i}(1:4,5:8) = 175;
     im = imagesc(images{i});
     xticklabels = [103, 200:100:800]; # tick at 100 doesn't show so tweak
     xtick = (xticklabels - 100) / RESOLUTION; # tick positions converted back to pixel locations
@@ -51,12 +51,14 @@ for i = 1:IMAGE_STEP:n_fr
     yticklabels(end) = 150;
     set(gca, 'YTick', ytick, 'YTickLabel', yticklabels);
     set(gca, 'DataAspectRatio', [1, 0.5, 1]); # [x, y, z] scaling NB 0.5 makes it twice as big on the chart
+    clb = colorbar ();
+    ytick = get(clb,"ytick");
+    set(clb, 'YTick', THRESHOLDS, 'YTickLabel', [0:7]);
     hold on
     for j = 3:size(mean_row_px)(2) # i.e. 3 to number of VALUES in posterized image
         rectangle('Position', [mean_col_px(ix, j) - 0.5 * width_px(ix, j), mean_row_px(ix, j) - 0.5 * height_px(ix, j), ...
                   width_px(ix, j), height_px(ix, j)], 'EdgeColor', jetc(VALUES(j), :));
     endfor
-    hold off
 
     print(sprintf('%s/post_im_at_%5.3f.jpg', file_stem, tm(ix))); # %s is replaced by first variable (file_stem) and treated as string...
     # %5.3f is replaced by second variable tm(ix) and treated as floating point 5 wide to 3 dec places
@@ -80,7 +82,8 @@ xlabel('time(s)')
 ylabel('height(mm)')
 title('Top of TC based on the average height of the thickest part')
 legend (key)
-get(gca,"ColorOrder")
+legend ('location', 'northeastoutside');
+
 subplot (2,2,2)
 set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren');
 legend
