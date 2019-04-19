@@ -82,7 +82,7 @@ xlabel('time(s)')
 ylabel('height(mm)')
 title('Top of TC based on the average height of the thickest part')
 legend (key)
-legend ('location', 'northeastoutside');
+#legend ('location', 'northeastoutside');
 
 subplot (2,2,2)
 set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren');
