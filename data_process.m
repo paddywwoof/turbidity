@@ -32,13 +32,15 @@ if not(exist(file_stem, 'file')) # create a directory for pictures and data if i
 endif
 
 #-------- plot difference images with boxes drawn over
-#
+#{
 for i = 1:IMAGE_STEP:n_fr
     ix = find(frame == i); # ix is the index of the data arrays where frame number == i, easiest to do this by a lookup process
     fig_name = sprintf('Frame at time = %5.3fs mean row = %d, mean col = %d, area = %d', tm(ix), mean_height(ix, 5), mean_dist(ix, 5), area(ix, 5));
     figure('NumberTitle', 'off', 'Name', fig_name)
     colormap(jet);
     sz_im = size(images{i});
+    images{i}(1:4,1:4) = 0;
+    images{i}(1:4,5:8) = 255;
     im = imagesc(images{i});
     xticklabels = [103, 200:100:800]; # tick at 100 doesn't show so tweak
     xtick = (xticklabels - 100) / RESOLUTION; # tick positions converted back to pixel locations
@@ -66,18 +68,21 @@ for i = n
   entry = sprintf ("greyscale %d", VALUES(i));
   key (i - n(1) + 1, 1:size(entry)(2)) = entry;
 endfor
-size(key)
+
 figure
+
 title ('')
 subplot (2,2,1)
+set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren');
 #plot(tm, mean_height(:, n)' + 0.5 * height(:, n)'); #TODO is there any way to put distance on the top x axis? I think we could average at what times the current is at what distance.
 plot(tm, mean_height(:, n) + 0.5 * height(:, n)); #removed the apostrophes and now the y axis is positive... which Jill thinks it should be, however, if this is wrong just remove this line and uncomment the one above
 xlabel('time(s)')
 ylabel('height(mm)')
 title('Top of TC based on the average height of the thickest part')
 legend (key)
-
+get(gca,"ColorOrder")
 subplot (2,2,2)
+set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren');
 legend
 plot(tm, front(:, n)' + 100);
 xlabel('time(s)')
@@ -85,6 +90,7 @@ ylabel('distance(mm)')
 title('front using average') #TODO calculations have now been update, so change this
 
 subplot (2,2,3)
+set(gca, "ColorOrder", jetc(VALUES(n),:));
 legend
 plot(tm, area(:, n)' / 100);
 xlabel('time(s)')
@@ -92,6 +98,7 @@ ylabel('area(mm^2)')
 title('Change in the area of the TC over time')
 
 subplot (2,2,4)
+set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren');
 legend
 velocities = (front(2:end, n) - front(1:end-1, n))' ./ (tm(2:end) - tm(1:end-1));
 velocities = max(velocities, 0.0); # get rid of initial negative velocities
