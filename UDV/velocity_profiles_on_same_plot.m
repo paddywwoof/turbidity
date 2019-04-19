@@ -1,7 +1,7 @@
 #FOLDER='C:\Users\Jill\turbidity\UDV'; # make sure you change 'xxx' to the right file path
 
 TM_COL = 1; # column with time values
-TM_FACTOR = 0.1302; # to convert time values to s
+TM_FACTOR = 0.09; # to convert time values to s
 FILES = {'JILL_055.csv'};  # actual names of files <<<<<<
 FIRST_ROW_TM = [48.7]; # after TC is incident pn the probe. Time in seconds for first reading <<<<<<<<<<<<<
 LAST_ROW_TM = [53.7]; # jjjjjjj 1 second after first time in seconds for last reading
