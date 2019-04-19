@@ -1,6 +1,7 @@
 pkg load image
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
 
+global STATS_SZ;
 STATS_SZ = 120;
 BKP_ROOT = '%03d.bkp'; # make directory path match location of bkp files
 BKPS = {{10, 10, 0}, # the number of video i.e. ..024.bkp.. padded with zeros to width 3
@@ -27,6 +28,7 @@ stats(:,:) = NaN; # to enable later use of nanmean(), nanstd() for different len
 key = char(zeros(1, 5)); #vid04 etc. filled in the loop below
 
 h = figure
+
 hold on
 for n = 1:length(BKPS)
   save_file = sprintf(BKP_ROOT, BKPS{n}{1}); # construct file name
@@ -40,8 +42,9 @@ for n = 1:length(BKPS)
   stats(start_to: end_to, n) = front(start_from: end_from, 6); # copy front array to stats with offset
 endfor
 
+key(end+1,:) = 'error';
 plot(tm(1:end), stats); # TODO check tm same length as stats
-xlim([0.0, 12.0]);
+xlim([0.0, 13.0]);
 ylim([0.0, 1000.0]);
 
 key(end+1, :) = 'error';
@@ -52,6 +55,7 @@ title('fronts at greyscale 132')
 
 pkg load statistics;
 
+global means;
 means = nanmean(stats, axis=2); # nanmean ignores NaN values, handy
 # stderr is standard deviation divided by root n, the number of experiment runs
 # needs to count non NaN values as there isn't a nancount()
@@ -60,7 +64,53 @@ stderr = nanstd(stats, flag=0, axis=2) ./ sum(!isnan(stats), axis=2) .^ 0.5;
 errorbar(tm(1:STATS_SZ), means, stderr * 2.0,'k');
 
 legend(key);
+legend("location", "northeastoutside");
 hold off
 
-save('-binary', 'unobstructed_mean_tmVSdst.bkp', 'means', 'stderr') # swop save to load, whe you use this in other scripts.
+########## now try and do the velocities
+FPS = 50.0; #NB reall this should be the const used in video_analysis but it wasn't saved bkp file
+dt = DATA_STEP / FPS; # because of shifting back and forward it doesn't make sense to divide by array, so just use single value
+velocities = (stats(2:end, :) - stats(1:end-1, :)) / dt;
+global v_means;
+v_means = nanmean(velocities, axis=2);
+global v_stderr;
+v_stderr = nanstd(velocities, flag=0, axis=2) ./ sum(!isnan(velocities), axis=2) .^ 0.5;
+
+## v. time
+figure
+hold on
+title('velocity against time');
+plot(tm(2:STATS_SZ), velocities, '.');
+errorbar(tm(2:STATS_SZ), v_means, v_stderr * 2.0, '*k');
+xlim([0.0, 13.0]);
+ylim([0.0, 250.0]);
+hold off
+
+## v. distance
+function e = error_calc(x)
+  global STATS_SZ;
+  global means;
+  global v_means;
+  global v_stderr;
+  v_fit = polyval(x, means(2:STATS_SZ));
+  ix = v_stderr > 0.0;
+  e = sum((v_fit(ix) - v_means(ix)) .^ 2 ./ v_stderr(ix));
+endfunction
+
+e_calc_fn = @error_calc
+
+p = polyfit(means(2:STATS_SZ), v_means, 4);
+#p = fminunc(e_calc_fn, p) # TODO doesn't seem to optimize
+v_fit = polyval(p, means(2:STATS_SZ));
+figure
+hold on
+title('velocity against distance');
+plot(means(2:STATS_SZ), velocities, '.', means(2:STATS_SZ), v_fit, '-r', 'LineWidth', 2);
+errorbar(means(2:STATS_SZ), v_means, stderr(2:STATS_SZ) * 2.0, v_stderr * 2.0, '#~>*k');
+xlim([0.0, 13.0]);
+ylim([0.0, 250.0]);
+hold off
+
+save('-binary', 'unobstructed_mean_tmVSdst.bkp', 'means', 'stderr', 'v_means', 'v_stderr') # swop save to load, whe you use this in other scripts.
+
 
