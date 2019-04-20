@@ -172,3 +172,20 @@ function smoothed_vals = wilson(vals, n, m, p, s)
   smoothed_vals = movmean(vals_culled, p); # finally apply moving average window
 endfunction
 
+function figure_size (fig, filename, width, height)
+%THESIS_QUART creates half page portrait figure in eps format for my thesis
+% IV 20/10/12
+
+  set(gcf,'Color','w')
+  set(gcf,'units','centimeters','Position',[10 8 width height]);
+  %saveas ([fname '.eps']) %if you want eps format
+  saveas (fig, filename)
+endfunction
+
+#figure_size (f, 'sized froude and rerynolds numbers.jpeg', w, h)
+#potrait
+#quarter = w11, h15
+#half = w21, h15
+#full  = w21, h30
+
+
