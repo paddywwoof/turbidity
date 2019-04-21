@@ -1,7 +1,6 @@
 pkg load image
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
 
-global STATS_SZ;
 STATS_SZ = 120;
 BKP_ROOT = '%03d.bkp'; # make directory path match location of bkp files
 BKPS = {{10, 10, 0}, # the number of video i.e. ..024.bkp.. padded with zeros to width 3
@@ -27,13 +26,13 @@ stats = zeros(STATS_SZ, length(BKPS)); # to hold the shifted data
 stats(:,:) = NaN; # to enable later use of nanmean(), nanstd() for different lengths of useful arrays 
 key = char(zeros(1, 5)); #vid04 etc. filled in the loop below
 
-h = figure
+h1 = figure("position",get(0,"screensize"))
 
 hold on
 for n = 1:length(BKPS)
   save_file = sprintf(BKP_ROOT, BKPS{n}{1}); # construct file name
   key(n,:) = sprintf('vid%02d', BKPS{n}{1}); # fill in legend key
-  load('-binary', save_file, 'tm', 'front'); # load data to working memory
+  load('-binary', save_file, 'tm', 'front', 'DATA_STEP'); # load data to working memory
   offset = BKPS{n}{2}; # alias variable to make following code easier to read
   start_to = max(1, 1 - offset); # these are a bit messy to allow for negative shift
   start_from = max(1, 1 + offset); # values: useful to highlight one of the lines by
@@ -55,7 +54,6 @@ title('fronts at greyscale 132')
 
 pkg load statistics;
 
-global means;
 means = nanmean(stats, axis=2); # nanmean ignores NaN values, handy
 # stderr is standard deviation divided by root n, the number of experiment runs
 # needs to count non NaN values as there isn't a nancount()
@@ -71,46 +69,38 @@ hold off
 FPS = 50.0; #NB reall this should be the const used in video_analysis but it wasn't saved bkp file
 dt = DATA_STEP / FPS; # because of shifting back and forward it doesn't make sense to divide by array, so just use single value
 velocities = (stats(2:end, :) - stats(1:end-1, :)) / dt;
-global v_means;
 v_means = nanmean(velocities, axis=2);
-global v_stderr;
 v_stderr = nanstd(velocities, flag=0, axis=2) ./ sum(!isnan(velocities), axis=2) .^ 0.5;
 
 ## v. time
-figure
+h2 = figure("position",get(0,"screensize"))
 hold on
 title('velocity against time');
 plot(tm(2:STATS_SZ), velocities, '.');
 errorbar(tm(2:STATS_SZ), v_means, v_stderr * 2.0, '*k');
 xlim([0.0, 13.0]);
-ylim([0.0, 250.0]);
+ylim([0.0, 350.0]);
 hold off
 
 ## v. distance
-function e = error_calc(x)
-  global STATS_SZ;
-  global means;
-  global v_means;
-  global v_stderr;
-  v_fit = polyval(x, means(2:STATS_SZ));
-  ix = v_stderr > 0.0;
-  e = sum((v_fit(ix) - v_means(ix)) .^ 2 ./ v_stderr(ix));
-endfunction
+xc = [820.0, 820.0, 820.0]; # constrain at x values due to end of tank
+yc = [0.0, 0.0, 0.0]; # constrain y or dy/dx or d2y/dx2
+cc = [1, 0, 0; 0, 0, 0; 0, 0, 1]; # y at 820 = 0, d2y/dx2 = 0 constrained
+con = struct('xc', xc, 'yc', yc, 'cc', cc);
+pp = splinefit(means(2:STATS_SZ), v_means, 3, 'constraints', con); # three sections of spline (default to fit cubic)
+v_fit = ppval(pp, means(2:STATS_SZ));
 
-e_calc_fn = @error_calc
-
-p = polyfit(means(2:STATS_SZ), v_means, 4);
-#p = fminunc(e_calc_fn, p) # TODO doesn't seem to optimize
-v_fit = polyval(p, means(2:STATS_SZ));
-figure
+h3 = figure("position",get(0,"screensize"))
 hold on
 title('velocity against distance');
 plot(means(2:STATS_SZ), velocities, '.', means(2:STATS_SZ), v_fit, '-r', 'LineWidth', 2);
 errorbar(means(2:STATS_SZ), v_means, stderr(2:STATS_SZ) * 2.0, v_stderr * 2.0, '#~>*k');
-xlim([0.0, 13.0]);
+xlim([0.0, 900.0]);
 ylim([0.0, 250.0]);
 hold off
 
-save('-binary', 'unobstructed_mean_tmVSdst.bkp', 'means', 'stderr', 'v_means', 'v_stderr') # swop save to load, whe you use this in other scripts.
-
+save('-binary', 'unobstructed_mean_tmVSdst.bkp', 'means', 'stderr', 'v_means', 'v_stderr', 'pp', 'v_fit') # swop save to load, whe you use this in other scripts.
+figure_size(h1, 'dist_v_time.jpg', 60, 42);
+figure_size(h2, 'vel_v_time.jpg', 60, 42);
+figure_size(h3, 'vel_v_dist.jpg', 60, 42);
 
