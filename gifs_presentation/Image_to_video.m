@@ -7,7 +7,7 @@ pics = {pics.name}';
 
 
 
-v = VideoWriter('unobstructed_concentration_run.avi');
+v = VideoWriter('run_041.avi');
 v.FrameRate = 0.5;
 open(v)
 

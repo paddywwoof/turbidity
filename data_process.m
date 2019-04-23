@@ -42,7 +42,7 @@ for i = 1:IMAGE_STEP:n_fr
     images{i}(1:4,1:4) = 0;
     images{i}(1:4,5:8) = 175;
     im = imagesc(images{i});
-    xticklabels = [103, 200:100:800]; # tick at 100 doesn't show so tweak
+    xticklabels = [103, 200:100:900]; # tick at 100 doesn't show so tweak
     xtick = (xticklabels - 100) / RESOLUTION; # tick positions converted back to pixel locations
     xticklabels(1) = 100; # then correct value
     set(gca, 'XTick', xtick, 'XTickLabel', xticklabels);
@@ -55,7 +55,7 @@ for i = 1:IMAGE_STEP:n_fr
     ytick = get(clb,"ytick");
     set(clb, 'YTick', THRESHOLDS, 'YTickLabel', [0:7]);
     hold on
-    #{
+    #
     for j = 3:size(mean_row_px)(2) # i.e. 3 to number of VALUES in posterized image
         rectangle('Position', [mean_col_px(ix, j) - 0.5 * width_px(ix, j), mean_row_px(ix, j) - 0.5 * height_px(ix, j), ...
                   width_px(ix, j), height_px(ix, j)], 'EdgeColor', jetc(VALUES(j), :));

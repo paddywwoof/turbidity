@@ -1,4 +1,5 @@
-useful_functions;
+pkg load image;
+#useful_functions;
 
 FILE = csvread('Fr_and_Re.csv');
 
@@ -14,7 +15,7 @@ Hun = FILE(6,4);
 f = figure;
 subplot(1,2,1);
 plot(FrO, H, 'xk', 'markersize', 10, FrUO, Hun, '.b', 'markersize', 20);
-xlabel('Froude number');
+xlabel('Froude number', '');
 ylabel('Height of obstacle(mm)');
 
 subplot(1,2,2);
@@ -23,5 +24,5 @@ xlabel('Reynolds Number');
 legend('Obstructed','Unobstructed');
 legend boxoff
 
-figure_size (f, 'sized froude and rerynolds numbers.jpeg', 11,15)
+#figure_size (f, 'sized froude and rerynolds numbers.jpeg', 11,15)
 #saveas(fig,'Froude and Reynods numbers.jpeg');
