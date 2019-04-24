@@ -116,7 +116,8 @@ xlabel('Distance(mm)');
 ylabel('U (mm^-s)')
 title('Velocity');
 
-figure_size(h1,(sprintf('%s/four graphs.jpeg', file_stem)),30,21);
+#sprintf('%s/four_graphs.jpg', file_stem)
+figure_size(h1, sprintf('%s/four_graphs.jpg', file_stem), 30, 21);
 # front is as expected with cols for different greyscales and rows for time
 csvwrite(sprintf('%s/front.csv', file_stem), front); # %s is replaced by first variable (file_stem) and treated as string...
 # sm (smoothed velocity) has been transposed so cols are time and rows diff greyscales
