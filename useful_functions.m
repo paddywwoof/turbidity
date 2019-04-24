@@ -179,7 +179,8 @@ function figure_size (fig, filename, width, height)
   set(gcf,'Color','w')
   set(gcf,'units','centimeters','Position',[10 8 width height]);
   %saveas ([fname '.eps']) %if you want eps format
-  saveas (fig, filename)
+  pixel_res = sprintf('-S%d,%d', 50*width, 50*height);
+  print (fig, filename, pixel_res)
 endfunction
 
 #figure_size (f, 'sized froude and rerynolds numbers.jpeg', w, h)
