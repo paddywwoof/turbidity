@@ -62,12 +62,13 @@ for k = 1:length(FILES)
   nu = 8.9e-4/1000;
   Reb = UaveZ1/ nu
     
-  figure
+  h1 = figure
   plot(mean_vt, height)
   xlabel('U (mm s^{-1})')
   ylabel('Height (mm)')
   title(FILES{k}{5})
 
+  figure_size(h1, sprintf('velocity %s.jpg', FILES{k}{5}), 7, 15);
   csvwrite(sprintf('UDV for %s.csv', FILES{k}{5}), mean_vt);
   csvwrite(sprintf('Frb and Reb for %s.csv', FILES{k}{5}), [Frb, Reb]); # in the file, the 1st number if the Froude and the 2nd is the Reynolds
 endfor

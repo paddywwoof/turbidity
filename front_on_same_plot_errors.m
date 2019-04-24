@@ -100,8 +100,8 @@ xtick = (xticklabels - 100);
 xticklabels(1) = 100;
 set(gca, 'XTick', xtick, 'XTickLabel', xticklabels);
 ylim([0.0, 250.0]);
-legend(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,'Mean (best fit)',);
-
+legend('1','2','3','4','5','6','7','8','9','10','11','12','13','15','16','17','18','19','Mean (best fit)', 'mean');
+legend boxoff
 xlabel('Distance (mm)');
 ylabel('U (mm^-s)');
 hold off
