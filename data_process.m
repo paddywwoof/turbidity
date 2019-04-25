@@ -32,7 +32,7 @@ if not(exist(file_stem, 'file')) # create a directory for pictures and data if i
 endif
 
 #-------- plot difference images with boxes drawn over
-#
+#{
 for i = 1:IMAGE_STEP:n_fr
     ix = find(frame == i); # ix is the index of the data arrays where frame number == i, easiest to do this by a lookup process
     fig_name = sprintf('Frame at time = %5.3fs mean row = %d, mean col = %d, area = %d', tm(ix), mean_height(ix, 5), mean_dist(ix, 5), area(ix, 5));
@@ -83,7 +83,7 @@ plot(tm, mean_height(:, n) + 0.5 * height(:, n)); #removed the apostrophes and n
 xlabel('Time(s)')
 ylabel('Height(mm)')
 title('Height')
-legend (key)
+#legend (key)
 #legend ('location', 'northeastoutside');
 
 subplot (2,2,2)
@@ -113,11 +113,11 @@ plot(front(2:end, 4)' + 100, sm); # NB front now needs transposing. All plotted 
 xlabel('Distance(mm)');
 #plot(tm(2:end), sm); 
 #xlabel('time(s)');
-ylabel('U (mm^-s)')
+ylabel('U (mm s^-1)')
 title('Velocity');
 
-#sprintf('%s/four_graphs.jpg', file_stem)
-#figure_size(h1,'026_four_graphs.jpg', 30, 21);
+save_name = sprintf('%s/four_graphs.jpg', file_stem)
+figure_size(h1, save_name, 30, 21);
 # front is as expected with cols for different greyscales and rows for time
 csvwrite(sprintf('%s/front.csv', file_stem), front); # %s is replaced by first variable (file_stem) and treated as string...
 # sm (smoothed velocity) has been transposed so cols are time and rows diff greyscales
