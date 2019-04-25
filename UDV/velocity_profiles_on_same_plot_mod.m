@@ -3,18 +3,22 @@
 TM_COL = 1; # column with time values
 TM_FACTOR = 0.09; # to convert time values to s
 
-FILES = {{{'JILL_024.csv','JILL_025.csv','JILL_027.csv','JILL_028.csv'}, [0.0, 0.107, 0.430, 0.752, 1.074, 1.29], [33, 33, 43, 37], [2, 2, 2, 2], 'unobrstucted at 15cm'},
-         {{'JILL_029.csv','JILL_030.csv','JILL_031.csv','JILL_032.csv'}, [0.0, 0.107, 0.430, 0.752, 1.074, 1.12], [39, 35, 37, 41], [2, 2, 2, 2], 'unobrstucted at 51cm'},
-         {{'JILL_033.csv','JILL_034.csv','JILL_035.csv','JILL_036.csv'}, [0.0, 0.107, 0.430, 0.752, 1.074, 1.40], [42, 32, 37, 39], [121, 121, 121, 121], 'unobrstucted at 78cm'},
+FILES = {{{'JILL_024.csv','JILL_025.csv','JILL_027.csv','JILL_028.csv'}, [0.0, 10.0, 40.0, 70.0, 100.0, 120.0], [33, 33, 43, 37], [2, 2, 2, 2], 'unobstructed at 15cm'},
+         {{'JILL_029.csv','JILL_030.csv','JILL_031.csv','JILL_032.csv'}, [0.0, 10.0, 40.0, 70.0, 100.0, 110.0], [39, 35, 37, 41], [2, 2, 2, 2], 'unobstructed at 51cm'},
+         {{'JILL_033.csv','JILL_034.csv','JILL_035.csv','JILL_036.csv'}, [0.0, 10.0, 40.0, 70.0, 100.0, 130.0], [42, 32, 37, 39], [121, 121, 121, 121], 'unobstructed at 78cm'},
 
-         {{'JILL_045.csv','JILL_046.csv'}, [0.0, 0.107, 0.430, 1.29], [32, 33], [121, 121], 'after 2cm obstacle'},
-         {{'JILL_048.csv','JILL_049.csv'}, [0.0, 0.107, 0.430, 1.50], [31, 32], [121, 121], 'after 4cm obstacle'},
-         {{'JILL_051.csv','JILL_052.csv'}, [0.0, 0.107, 0.430, 1.29], [36, 32], [121, 121], 'after 6cm obstacle'},
-         {{'JILL_054.csv','JILL_055.csv'}, [0.0, 0.107, 0.430, 1.18], [35, 36], [121, 121], 'after 10cm obstacle'}};
+         {{'JILL_045.csv','JILL_046.csv'}, [0.0, 10.0, 40.0, 120.0], [32, 33], [121, 121], 'after 2cm obstacle'},
+         {{'JILL_048.csv','JILL_049.csv'}, [0.0, 10.0, 40.0, 140.0], [31, 32], [121, 121], 'after 4cm obstacle'},
+         {{'JILL_051.csv','JILL_052.csv'}, [0.0, 10.0, 40.0, 120.0], [36, 32], [121, 121], 'after 6cm obstacle'},
+         {{'JILL_054.csv','JILL_055.csv'}, [0.0, 10.0, 40.0, 110.0], [35, 36], [121, 121], 'after 10cm obstacle'}};
          # actual names of files, height, first_row_tm, first_ch, title
 
 addpath('../'); # because of this directory changing!!
 useful_functions;
+
+Zf =  93.107;
+
+
 
 for k = 1:length(FILES)
   height = FILES{k}{2};
@@ -63,12 +67,14 @@ for k = 1:length(FILES)
   Reb = UaveZ1/ nu
     
   h1 = figure
-  plot(mean_vt, height)
+  plot(mean_vt, height/Zf)
+  xlim([-60,100]);
+  ylim([0,1.5]);
   xlabel('U (mm s^{-1})')
   ylabel('Z/Zf')
   title(FILES{k}{5})
 
   figure_size(h1, sprintf('velocity %s.jpg', FILES{k}{5}), 7, 15);
   csvwrite(sprintf('UDV for %s.csv', FILES{k}{5}), mean_vt);
-  #csvwrite(sprintf('Frb and Reb for %s.csv', FILES{k}{5}), [Frb, Reb]); # in the file, the 1st number if the Froude and the 2nd is the Reynolds
+  csvwrite(sprintf('Frb and Reb for %s.csv', FILES{k}{5}), [Frb, Reb]); # in the file, the 1st number if the Froude and the 2nd is the Reynolds
 endfor
