@@ -1,7 +1,7 @@
 pkg load image;
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
 
-#
+#{
 run_number = {{38,11,150},
              {39,11,145},
              {41,12,150},
@@ -10,10 +10,10 @@ run_number = {{38,11,150},
              {43,20,170}};
 #}
 
-
-#run_number = {38,44,45,46};
-#run_number = {39,47,48,49};
-#run_number = {41,50,51,52};
+run_number = {{37,11,150},{53,11,150},{54,11,150},{55,11,150}};
+#run_number = {{41,12,150},{50,35,150},{51,12,150},{52,12,150}};
+#run_number = {{39,11,140},{47,11,140},{48,20,140},{49,29,140}};
+#run_number = {{38,11,150},{44,11,150},{45,11,150},{46,11,150}};
 
 #run_number = {37,53,54,55};
 
@@ -29,7 +29,7 @@ hold on
 for i = 1:length(run_number);
   front = csvread(sprintf('%03d/front.csv', run_number{i}{1}))(run_number{i}{2}:run_number{i}{3},:);
   sm = csvread(sprintf('%03d/sm.csv', run_number{i}{1}))(run_number{i}{2}:run_number{i}{3}-1,:);
-  plot(front(2:end,4), sm(:,1),'linewidth',1.7);
+  plot(front(2:end,4), sm(:,1), 'linewidth',1.7);
 endfor
 #}
 
@@ -38,15 +38,18 @@ xtick = (xticklabels - 100);
 xticklabels(1) = 100; # then correct value
 set(gca, 'XTick', xtick, 'XTickLabel', xticklabels);
 
-ylim([0.0,300.0]); 
+ylim([0.0,250.0]); 
 
 xlabel('Distance (mm)');
 ylabel('U (mm^-s)');
 
-legend('unobstructed mean','Zo/Zf 0.215','Zo/Zf 0.430','Zo/Zf 0.644','Zo/Zf 0.860','Zo/Zf 1.074','Zo/Zf 1.289');
-#legend('unobstructed mean', '20 mm', 'udv on obst', 'udv at 78 at 10', 'udv at 78 at 40')
-#legend('unobstructed mean', '40 mm', 'udv on obst', 'udv at 78 at 10', 'udv at 78 at 40')
+#legend('unobstructed mean','Zo/Zf 0.215','Zo/Zf 0.430','Zo/Zf 0.644','Zo/Zf 0.860','Zo/Zf 1.074','Zo/Zf 1.289');
+#legend('unobstructed mean', 'Zo/Zf 0.644', 'udv on obst', 'udv at 78 at 10', 'udv at 78 at 40')
+legend('unobstructed mean', 'Zo/Zf 1.074', 'udv on obst', 'udv at 78 at 10', 'udv at 78 at 40')
+#legend('unobstructed mean', 'Zo/Zf 0.215', 'udv on obst', 'udv at 78 at 10', 'udv at 78 at 40')
 #legend('unobstructed mean','Zo/Zf 1.50');
 hold off
 
-figure_size(h1,'video velocity unob vs ob no 140.jpg',21,15);
+#figure_size(h1,'video velocity unob vs ob no 140.jpg',15,10);
+#figure_size(h1,'video velocity unob vs 140.jpg',15,10);
+figure_size(h1,'video velocity 100s.jpg',15,10);

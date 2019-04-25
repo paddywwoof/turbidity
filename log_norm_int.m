@@ -85,7 +85,7 @@ for plt = ['f', 'r']
   xlabel('Distance (mm)');
 
   # TODO put legend s Zo/Zf
-  legend('unobstructed mean','20 mm','40 mm','60 mm','80 mm','100 mm','120 mm','140 mm');
+  legend('unobstructed mean','Zo/Zf 0.215','Zo/Zf 0.430','Zo/Zf 0.644','Zo/Zf 0.860','Zo/Zf 1.074','Zo/Zf 1.289');
   #legend('unobstructed mean', '20 mm', 'udv on obst', 'udv at 78 at 10', 'udv at 78 at 40')
   #legend('unobstructed mean', '40 mm', 'udv on obst', 'udv at 78 at 10', 'udv at 78 at 40')
   #legend('unobstructed mean','Zo/Zf 1.50');
