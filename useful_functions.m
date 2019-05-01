@@ -175,7 +175,7 @@ endfunction
 function figure_size (fig, filename, width, height)
 %THESIS_QUART creates half page portrait figure in eps format for my thesis
 % IV 20/10/12
-
+  set(gcf, 'Position', get(0, 'Screensize'));
   set(gcf,'Color','w')
   set(gcf,'units','centimeters','Position',[10 8 width height]);
   %saveas ([fname '.eps']) %if you want eps format

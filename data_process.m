@@ -10,8 +10,8 @@
 
 pkg load image
 
-
-VIDEO = '041.avi';   # video of experimental run
+FONTSIZE = 24; # this seems about OK for the size of graphs produced here.
+VIDEO = '055.avi';   # video of experimental run
 #VIDEO = 'JRG_h00_r10.avi';   # video of experimental run
 
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
@@ -51,6 +51,7 @@ for i = 1:IMAGE_STEP:n_fr
     yticklabels(end) = 150;
     set(gca, 'YTick', ytick, 'YTickLabel', yticklabels);
     set(gca, 'DataAspectRatio', [1, 0.5, 1]); # [x, y, z] scaling NB 0.5 makes it twice as big on the chart
+    set(gca, 'fontsize', FONTSIZE);
     clb = colorbar ();
     ytick = get(clb,"ytick");
     set(clb, 'YTick', THRESHOLDS, 'YTickLabel', [0:7]);
@@ -77,7 +78,7 @@ h1 = figure
 
 title ('')
 subplot (2,2,1)
-set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren');
+set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren', 'fontsize', FONTSIZE);
 #plot(tm, mean_height(:, n)' + 0.5 * height(:, n)'); #TODO is there any way to put distance on the top x axis? I think we could average at what times the current is at what distance.
 plot(tm, mean_height(:, n) + 0.5 * height(:, n)); #removed the apostrophes and now the y axis is positive... which Jill thinks it should be, however, if this is wrong just remove this line and uncomment the one above
 xlabel('Time(s)')
@@ -87,7 +88,7 @@ title('Height')
 #legend ('location', 'northeastoutside');
 
 subplot (2,2,2)
-set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren');
+set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren', 'fontsize', FONTSIZE);
 legend
 plot(tm, front(:, n)' + 100);
 xlabel('Time(s)')
@@ -95,7 +96,7 @@ ylabel('Distance(mm)')
 title('Front') #TODO calculations have now been update, so change this
 
 subplot (2,2,3)
-set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren');
+set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren', 'fontsize', FONTSIZE);
 legend
 plot(tm, area(:, n)' / 100);
 xlabel('Time(s)')
@@ -103,7 +104,7 @@ ylabel('Area(mm^2)')
 title('Area')
 
 subplot (2,2,4)
-set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren');
+set(gca, "ColorOrder", jetc(VALUES(n),:), 'NextPlot', 'replacechildren', 'fontsize', FONTSIZE);
 legend
 velocities = (front(2:end, n) - front(1:end-1, n))' ./ (tm(2:end) - tm(1:end-1));
 velocities = max(velocities, 0.0); # get rid of initial negative velocities
