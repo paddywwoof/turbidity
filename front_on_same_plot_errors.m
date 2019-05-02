@@ -98,16 +98,18 @@ errorbar(means(2:STATS_SZ), v_means, stderr(2:STATS_SZ) * 2.0, v_stderr * 2.0, '
 xticklabels = [103, 200:100:900]; # tick at 100 doesn't show so tweak
 xtick = (xticklabels - 100);
 xticklabels(1) = 100;
-set(gca, 'XTick', xtick, 'XTickLabel', xticklabels);
+set(gca, 'XTick', xtick, 'fontsize', 16, 'XTickLabel', xticklabels, 'fontsize', 16);
 ylim([0.0, 250.0]);
-legend('1','2','3','4','5','6','7','8','9','10','11','12','13','15','16','17','18','19','Mean (best fit)', 'mean');
+leg = legend('1','2','3','4','5','6','7','8','9','10','11','12','13','15','16','17','18','19','Mean (best fit)', 'mean');
+set(leg, 'fontsize', 16);
 legend boxoff
-xlabel('Distance (mm)');
-ylabel('U (mm s^-1)');
+xlabel('Distance (mm)', 'fontsize', 16);
+ylabel('U (mm s^-^1)', 'fontsize', 16);
+
 hold off
 
 save('-binary', 'unobstructed_mean_tmVSdst.bkp', 'means', 'stderr', 'v_means', 'v_stderr', 'pp', 'v_fit') # swop save to load, whe you use this in other scripts.
-figure_size(h1, 'dist_v_time.jpg', 60, 42);
-figure_size(h2, 'vel_v_time.jpg', 60, 42);
-figure_size(h3, 'vel_v_dist.jpg', 60, 42);
+figure_size(h1, 'dist_v_time.jpg', 30, 21);
+figure_size(h2, 'vel_v_time.jpg', 30, 21);
+figure_size(h3, 'vel_v_dist.jpg', 21, 15);
 

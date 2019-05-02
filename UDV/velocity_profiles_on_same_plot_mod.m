@@ -3,14 +3,14 @@
 TM_COL = 1; # column with time values
 TM_FACTOR = 0.09; # to convert time values to s
 
-FILES = {{{'JILL_024.csv','JILL_025.csv','JILL_027.csv','JILL_028.csv'}, [0.0, 10.0, 40.0, 70.0, 100.0, 120.0], [33, 33, 43, 37], [2, 2, 2, 2], 'unobstructed at 15cm'},
-         {{'JILL_029.csv','JILL_030.csv','JILL_031.csv','JILL_032.csv'}, [0.0, 10.0, 40.0, 70.0, 100.0, 110.0], [39, 35, 37, 41], [2, 2, 2, 2], 'unobstructed at 51cm'},
-         {{'JILL_033.csv','JILL_034.csv','JILL_035.csv','JILL_036.csv'}, [0.0, 10.0, 40.0, 70.0, 100.0, 130.0], [42, 32, 37, 39], [121, 121, 121, 121], 'unobstructed at 78cm'},
+FIFTEEN      = {{'JILL_024.csv','JILL_025.csv','JILL_027.csv','JILL_028.csv'}, [0.0, 10.0, 40.0, 70.0, 100.0, 120.0], [33, 33, 43, 37], [2, 2, 2, 2], 'unobstructed at 15cm'},
+FIFTYONE     = {{'JILL_029.csv','JILL_030.csv','JILL_031.csv','JILL_032.csv'}, [0.0, 10.0, 40.0, 70.0, 100.0, 110.0], [39, 35, 37, 41], [2, 2, 2, 2], 'unobstructed at 51cm'},
+SEVENTYEIGHT = {{'JILL_033.csv','JILL_034.csv','JILL_035.csv','JILL_036.csv'}, [0.0, 10.0, 40.0, 70.0, 100.0, 130.0], [42, 32, 37, 39], [121, 121, 121, 121], 'unobstructed at 78cm'},
 
-         {{'JILL_045.csv','JILL_046.csv'}, [0.0, 10.0, 40.0, 120.0], [32, 33], [121, 121], 'after 2cm obstacle'},
-         {{'JILL_048.csv','JILL_049.csv'}, [0.0, 10.0, 40.0, 140.0], [31, 32], [121, 121], 'after 4cm obstacle'},
-         {{'JILL_051.csv','JILL_052.csv'}, [0.0, 10.0, 40.0, 120.0], [36, 32], [121, 121], 'after 6cm obstacle'},
-         {{'JILL_054.csv','JILL_055.csv'}, [0.0, 10.0, 40.0, 110.0], [35, 36], [121, 121], 'after 10cm obstacle'}};
+TWO  = {{'JILL_045.csv','JILL_046.csv'}, [0.0, 10.0, 40.0, 120.0], [32, 33], [121, 121], 'after 2cm obstacle'},
+FOUR = {{'JILL_048.csv','JILL_049.csv'}, [0.0, 10.0, 40.0, 140.0], [31, 32], [121, 121], 'after 4cm obstacle'},
+SIX  = {{'JILL_051.csv','JILL_052.csv'}, [0.0, 10.0, 40.0, 120.0], [36, 32], [121, 121], 'after 6cm obstacle'},
+TEN  = {{'JILL_054.csv','JILL_055.csv'}, [0.0, 10.0, 40.0, 110.0], [35, 36], [121, 121], 'after 10cm obstacle'};
          # actual names of files, height, first_row_tm, first_ch, title
 
 addpath('../'); # because of this directory changing!!

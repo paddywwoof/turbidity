@@ -15,14 +15,21 @@ Hun = FILE(6,5);
 f = figure;
 subplot(1,2,1);
 plot(FrO, H, 'xk', 'markersize', 10, FrUO, Hun, '.b', 'markersize', 20);
-xlabel('Froude number');
-ylabel('Zo/Zf');
+xlabel('Froude number', 'fontsize', 16);
+ylabel('Zo/Zf', 'fontsize', 16);
+
+f = get(gcf,'currentaxes');
+set(f, 'fontsize', 16);
 
 subplot(1,2,2);
 plot(ReO, H, 'xk', 'markersize', 10, ReUO, Hun, '.b', 'markersize', 20);
-xlabel('Reynolds Number');
-legend('Obstructed','Unobstructed');
+xlabel('Reynolds Number', 'fontsize', 16);
+leg = legend('Obstructed','Unobstructed');
+set(leg, 'fontsize', 16);
 legend boxoff
 
-figure_size (f, 'talk size froude and rerynolds numbers.jpeg', 30,21)
+f = get(gcf,'currentaxes');
+set(f, 'fontsize', 16);
+
+figure_size (f, 'talk size froude and rerynolds numbers.jpeg', 10,15)
 #saveas(fig,'Froude and Reynods numbers.jpeg');
