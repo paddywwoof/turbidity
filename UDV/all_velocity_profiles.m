@@ -37,12 +37,12 @@ hold on
 plot(vfour,hfour,'.r', 'markersize', 30);
 plot(vsix,hsix,'.g', 'markersize', 30);
 plot(vten,hten,'.k', 'markersize', 30);
-plot(vatwo,hatwo, '-b');
-plot(vafour,hafour, '-r');
-plot(vasix,hasix, '-g');
-plot(vaten,haten, '-k');
+plot(vatwo,hatwo, '-b', 'LineWidth', 2);
+plot(vafour,hafour, '-r', 'LineWidth', 2);
+plot(vasix,hasix, '-g', 'LineWidth', 2);
+plot(vaten,haten, '-k', 'LineWidth', 2);
 
-#ylim([0,150]);
+ylim([0,150]);
 xlabel('U (mm s^{-1})','fontsize', 16)
 ylabel('Height (mm)', 'fontsize', 16);
 leg = legend('Zo/Zf 0.215','Zo/Zf 0.430','Zo/Zf 0.644','Zo/Zf 1.074');
