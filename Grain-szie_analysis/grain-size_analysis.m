@@ -6,13 +6,13 @@ E_Boss_data = ('E_Boss_data.mat');
 E_g = E_Boss_data(:,1);
 E_pc = E_Boss_data(:,2);
 
-#{
+%{
 p = polyfit(g, pc, 1);
 g1 = polyval(p, g);
 
 E_p = polyfit(E_g, E_pc, 1);
 E_g1 = polyval(E_p, E_g);
-#}
+%}
 
 fig2 = figure;
 
