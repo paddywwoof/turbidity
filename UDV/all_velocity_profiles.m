@@ -42,7 +42,7 @@ plot(vafour,hafour, '-r', 'LineWidth', 2);
 plot(vasix,hasix, '-g', 'LineWidth', 2);
 plot(vaten,haten, '-k', 'LineWidth', 2);
 
-ylim([0,150]);
+#ylim([0,150]);
 xlabel('U (mm s^{-1})','fontsize', 16)
 ylabel('Height (mm)', 'fontsize', 16);
 leg = legend('Zo/Zf 0.215','Zo/Zf 0.430','Zo/Zf 0.644','Zo/Zf 1.074');

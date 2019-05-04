@@ -11,7 +11,7 @@
 pkg load image
 
 FONTSIZE = 24; # this seems about OK for the size of graphs produced here.
-VIDEO = '055.avi';   # video of experimental run
+VIDEO = '026.avi';   # video of experimental run
 #VIDEO = 'JRG_h00_r10.avi';   # video of experimental run
 
 useful_functions; # NB this needs to be included if video_analysis hasn't just been run
@@ -32,7 +32,7 @@ if not(exist(file_stem, 'file')) # create a directory for pictures and data if i
 endif
 
 #-------- plot difference images with boxes drawn over
-#{
+#
 for i = 1:IMAGE_STEP:n_fr
     ix = find(frame == i); # ix is the index of the data arrays where frame number == i, easiest to do this by a lookup process
     fig_name = sprintf('Frame at time = %5.3fs mean row = %d, mean col = %d, area = %d', tm(ix), mean_height(ix, 5), mean_dist(ix, 5), area(ix, 5));
@@ -73,7 +73,7 @@ for i = n
   entry = sprintf ("greyscale %d", VALUES(i));
   key (i - n(1) + 1, 1:size(entry)(2)) = entry;
 endfor
-
+#{
 h1 = figure
 
 title ('')
